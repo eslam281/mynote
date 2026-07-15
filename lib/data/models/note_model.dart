@@ -6,6 +6,8 @@ class NoteModel extends Equatable {
   final String content;
   final int color;
   final bool isPinned;
+  final bool isArchived;
+  final String? category;
   final DateTime createdAt;
 
   const NoteModel({
@@ -14,6 +16,8 @@ class NoteModel extends Equatable {
     required this.content,
     required this.color,
     this.isPinned = false,
+    this.isArchived = false,
+    this.category,
     required this.createdAt,
   });
 
@@ -23,6 +27,8 @@ class NoteModel extends Equatable {
     String? content,
     int? color,
     bool? isPinned,
+    bool? isArchived,
+    String? category,
     DateTime? createdAt,
   }) {
     return NoteModel(
@@ -31,6 +37,8 @@ class NoteModel extends Equatable {
       content: content ?? this.content,
       color: color ?? this.color,
       isPinned: isPinned ?? this.isPinned,
+      isArchived: isArchived ?? this.isArchived,
+      category: category ?? this.category,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -42,6 +50,8 @@ class NoteModel extends Equatable {
       'content': content,
       'color': color,
       'isPinned': isPinned ? 1 : 0,
+      'isArchived': isArchived ? 1 : 0,
+      'category': category,
       'createdAt': createdAt.toIso8601String(),
     };
   }
@@ -53,10 +63,12 @@ class NoteModel extends Equatable {
       content: map['content'] as String,
       color: map['color'] as int,
       isPinned: (map['isPinned'] as int) == 1,
+      isArchived: (map['isArchived'] ?? 0) == 1,
+      category: map['category'] as String?,
       createdAt: DateTime.parse(map['createdAt'] as String),
     );
   }
 
   @override
-  List<Object?> get props => [id, title, content, color, isPinned, createdAt];
+  List<Object?> get props => [id, title, content, color, isPinned, isArchived, category, createdAt];
 }

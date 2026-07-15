@@ -16,14 +16,18 @@ class SqlDb {
 
   initialDb() async {
     var databasePath = await getDatabasesPath();
-    String path = join(databasePath, "notes_v2.db");
+    String path = join(databasePath, "notes_v3.db");
     Database mydb = await openDatabase(path,
-        onCreate: _onCreate, version: 1, onUpgrade: _onUpgrade);
+        onCreate: _onCreate, version: 2, onUpgrade: _onUpgrade);
     return mydb;
   }
 
   _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    print("Upgrading database from version $oldVersion to $newVersion");
+    if (oldVersion < 2) {
+      await db.execute('ALTER TABLE notes ADD COLUMN isArchived INTEGER NOT NULL DEFAULT 0');
+      await db.execute('ALTER TABLE notes ADD COLUMN category TEXT');
+      print("Upgraded database to version 2");
+    }
   }
 
   _onCreate(Database db, int version) async {
@@ -34,16 +38,20 @@ class SqlDb {
         "content" TEXT NOT NULL,
         "color" INTEGER NOT NULL,
         "isPinned" INTEGER NOT NULL DEFAULT 0,
+        "isArchived" INTEGER NOT NULL DEFAULT 0,
+        "category" TEXT,
         "createdAt" TEXT NOT NULL
       )
     ''');
     print("Create database and table ====================");
   }
 
-  Future<List<NoteModel>> readAllNotes() async {
+  Future<List<NoteModel>> readAllNotes({bool includeArchived = false}) async {
     Database? mydb = await db;
+    String? where = includeArchived ? null : 'isArchived = 0';
     List<Map<String, dynamic>> response = await mydb!.query(
       'notes',
+      where: where,
       orderBy: 'isPinned DESC, createdAt DESC',
     );
     return response.map((e) => NoteModel.fromMap(e)).toList();
@@ -82,13 +90,27 @@ class SqlDb {
     return response;
   }
 
-  Future<List<NoteModel>> searchNotes(String query) async {
+  Future<List<NoteModel>> searchNotes(String query, {bool includeArchived = false}) async {
+    Database? mydb = await db;
+    String where = '(title LIKE ? OR content LIKE ?)';
+    if (!includeArchived) {
+      where += ' AND isArchived = 0';
+    }
+    List<Map<String, dynamic>> response = await mydb!.query(
+      'notes',
+      where: where,
+      whereArgs: ['%$query%', '%$query%'],
+      orderBy: 'isPinned DESC, createdAt DESC',
+    );
+    return response.map((e) => NoteModel.fromMap(e)).toList();
+  }
+
+  Future<List<NoteModel>> readArchivedNotes() async {
     Database? mydb = await db;
     List<Map<String, dynamic>> response = await mydb!.query(
       'notes',
-      where: 'title LIKE ? OR content LIKE ?',
-      whereArgs: ['%$query%', '%$query%'],
-      orderBy: 'isPinned DESC, createdAt DESC',
+      where: 'isArchived = 1',
+      orderBy: 'createdAt DESC',
     );
     return response.map((e) => NoteModel.fromMap(e)).toList();
   }
