@@ -34,14 +34,14 @@ class NotesLoaded extends NotesState {
     List<NoteModel>? notes,
     String? searchQuery,
     bool? isGridView,
-    String? selectedCategory,
+    String? Function()? selectedCategory,
     bool? isShowingArchived,
   }) {
     return NotesLoaded(
       notes ?? this.notes,
       searchQuery: searchQuery ?? this.searchQuery,
       isGridView: isGridView ?? this.isGridView,
-      selectedCategory: selectedCategory ?? this.selectedCategory,
+      selectedCategory: selectedCategory != null ? selectedCategory() : this.selectedCategory,
       isShowingArchived: isShowingArchived ?? this.isShowingArchived,
     );
   }

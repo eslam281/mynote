@@ -44,15 +44,34 @@ class _HomePageState extends State<HomePage> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const NoteEditorPage()),
-          );
-        },
-        label: const Text('New Note', style: TextStyle(fontWeight: FontWeight.bold)),
-        icon: const Icon(Icons.add),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: const LinearGradient(
+            colors: [Color(0xFF0061A4), Color(0xFF00A3FF)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF0061A4).withValues(alpha: 0.3),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const NoteEditorPage()),
+            );
+          },
+          label: const Text('New Note', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+          icon: const Icon(Icons.add, color: Colors.white),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
       ),
     );
   }
@@ -62,6 +81,20 @@ class _HomePageState extends State<HomePage> {
     
     return SliverAppBar.large(
       title: Text(isArchivedView ? 'Archive' : 'My Notes'),
+      flexibleSpace: FlexibleSpaceBar(
+        background: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                const Color(0xFFF0F4F8),
+                const Color(0xFFE0E8F0),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+        ),
+      ),
       actions: [
         IconButton(
           icon: Icon(state is NotesLoaded && state.isGridView ? Icons.view_list_rounded : Icons.grid_view_rounded),
@@ -130,13 +163,25 @@ class _HomePageState extends State<HomePage> {
             final isSelected = (state.selectedCategory ?? 'All') == category;
             return Padding(
               padding: const EdgeInsets.only(right: 8),
-              child: FilterChip(
-                label: Text(category),
+              child: ChoiceChip(
+                label: Text(
+                  category,
+                  style: TextStyle(
+                    color: isSelected ? Colors.white : Colors.black87,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  ),
+                ),
                 selected: isSelected,
                 onSelected: (selected) {
-                  context.read<NotesCubit>().filterByCategory(category == 'All' ? null : category);
+                  if (selected) {
+                    context.read<NotesCubit>().filterByCategory(category == 'All' ? null : category);
+                  }
                 },
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                selectedColor: const Color(0xFF0061A4),
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                showCheckmark: false,
+                elevation: isSelected ? 4 : 0,
               ),
             );
           },

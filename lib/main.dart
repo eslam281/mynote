@@ -23,39 +23,50 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF6750A4),
+            seedColor: const Color(0xFF0061A4), // Deep Ocean Blue
             brightness: Brightness.light,
-            surface: const Color(0xFFF7F2FA),
+            surface: const Color(0xFFF0F4F8), // Very light blue-gray
           ),
           textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
           appBarTheme: AppBarTheme(
             centerTitle: false,
             elevation: 0,
-            backgroundColor: const Color(0xFFF7F2FA),
+            backgroundColor: const Color(0xFFF0F4F8),
             titleTextStyle: GoogleFonts.poppins(
-              color: Colors.black87,
-              fontSize: 22,
-              fontWeight: FontWeight.w600,
+              color: const Color(0xFF001E30),
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
             ),
           ),
+          chipTheme: ChipThemeData(
+            backgroundColor: Colors.white,
+            selectedColor: const Color(0xFF0061A4).withValues(alpha: 0.1),
+            labelStyle: const TextStyle(color: Colors.black87),
+            secondaryLabelStyle: const TextStyle(color: Colors.white),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
           cardTheme: CardThemeData(
-            elevation: 0,
+            elevation: 2,
+            shadowColor: Colors.black.withValues(alpha: 0.05),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(28),
             ),
             color: Colors.white,
           ),
           floatingActionButtonTheme: FloatingActionButtonThemeData(
-            elevation: 4,
+            elevation: 6,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(20),
             ),
+            backgroundColor: const Color(0xFF0061A4),
+            foregroundColor: Colors.white,
           ),
         ),
         darkTheme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFFD0BCFF),
+            seedColor: const Color(0xFF1875DE),
             brightness: Brightness.dark,
           ),
           textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).primaryTextTheme),

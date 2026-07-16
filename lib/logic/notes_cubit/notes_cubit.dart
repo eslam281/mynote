@@ -47,10 +47,7 @@ class NotesCubit extends Cubit<NotesState> {
   Future<void> filterByCategory(String? category) async {
     if (state is NotesLoaded) {
       final currentState = state as NotesLoaded;
-      emit(currentState.copyWith(selectedCategory: category));
-      // Re-load with category filter if implemented in DB, 
-      // otherwise we can filter in memory for small datasets.
-      // For performance, let's filter in memory first.
+      emit(currentState.copyWith(selectedCategory: () => category));
       loadNotes(); 
     }
   }

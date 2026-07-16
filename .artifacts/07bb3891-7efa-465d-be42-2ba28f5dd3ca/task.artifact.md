@@ -1,17 +1,14 @@
-# Tasks - MyNote Modernization
+# Tasks - UI Refinement & Bug Fixes
 
-- `[x]` Update dependencies (`pubspec.yaml`)
-- `[x]` Enhance Data Layer
-    - `[x]` Update `NoteModel` with `isArchived` and `category`
-    - `[x]` Update `SqlDb` with migration logic
-- `[x]` Refine Business Logic
-    - `[x]` Update `NotesState` (support for categories and view mode)
-    - `[x]` Update `NotesCubit` (archiving, filtering, grid/list toggle)
-- `[x]` Modernize UI/UX
-    - `[x]` Update `main.dart` theme
-    - `[x]` Create new `NoteCard` (Bento style)
-    - `[x]` Update `HomePage` (SliverAppBar, Search, Category Chips)
-    - `[x]` Update `NoteEditorPage` (Categories, Sharing, Color Picker)
-- `[x]` Verification & Polishing
-    - `[x]` Test all new features
-    - `[x]` Final UI polish and animations
+- `[x]` Fix Build Error (`CardThemeData` -> `CardTheme`)
+- `[x]` Fix Category Bug
+    - `[x]` Update `NotesLoaded.copyWith` to handle null category
+    - `[x]` Update `NotesCubit.filterByCategory` to pass null for "All"
+- `[x]` Modernize Theme
+    - `[x]` Switch to Blue/Cyan Ocean theme
+    - `[x]` Add gradients to Floating Action Button
+    - `[x]` Update Chip styles
+- `[x]` Refine UI Components
+    - `[x]` Update `NoteCard` with better shadows and layout
+    - `[x]` Add background gradient to `SliverAppBar`
+    - `[x]` Switch to `ChoiceChip` for category selection
