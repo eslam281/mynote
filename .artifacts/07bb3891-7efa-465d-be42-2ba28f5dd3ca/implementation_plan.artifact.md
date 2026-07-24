@@ -1,40 +1,50 @@
-# Implementation Plan - UI Refinement & Bug Fixes
+# Implementation Plan - Dynamic Categories & Productivity Features
 
-This plan addresses the category selection bug, fixes build errors introduced during manual edits, and enhances the app with a more vibrant, gradient-based design as requested.
+This plan introduces user-managed categories, a note duplication feature, and a "Recently Deleted" (Trash) system to enhance the app's utility while maintaining 100% local privacy.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> - **Color Change**: Moving away from purple to a "Deep Ocean & Arctic" theme (Blues and Cyans) with modern gradients.
-> - **Bug Fix**: Fixing the "All" category selection by correcting the `copyWith` logic and using `ChoiceChip`.
+> - **Dynamic Categories**: Users will be able to create, edit, and delete their own categories. The previous hardcoded list will be replaced.
+> - **Privacy**: All new features (Trash, Categories, Duplication) remain strictly local on the device. No data leaves the app.
 
 ## Proposed Changes
 
-### 1. Build Error Fix [MODIFY]
-- **[main.dart](file:///U:/StudioProjects/mynote/lib/main.dart)**: Correct `CardThemeData` to `CardTheme` to resolve the compilation error.
+### 1. Data Layer & Database [MODIFY]
+- **[SqlDb](file:///U:/StudioProjects/mynote/lib/data/database/sqldb.dart)**:
+    - Add a `categories` table (`id`, `name`, `color`).
+    - Add `isDeleted` (bool) and `deletedAt` (String?) columns to the `notes` table for the Trash feature.
+    - Implement CRUD for categories.
+- **[NoteModel](file:///U:/StudioProjects/mynote/lib/data/models/note_model.dart)**: Add `isDeleted` and `deletedAt` fields.
+- **[CategoryModel] [NEW]**: Create a model for categories.
 
-### 2. Logic Fix [MODIFY]
-- **[NotesState](file:///U:/StudioProjects/mynote/lib/logic/notes_cubit/notes_state.dart)**: Update `NotesLoaded.copyWith` to properly handle `null` values for `selectedCategory`, allowing the "All" filter to work correctly.
+### 2. Logic [MODIFY]
+- **[NotesCubit](file:///U:/StudioProjects/mynote/lib/logic/notes_cubit/notes_cubit.dart)**:
+    - Add methods to fetch and manage categories.
+    - Add `duplicateNote(NoteModel note)` method.
+    - Update delete logic to "Soft Delete" (move to trash) vs "Permanent Delete".
+    - Add `restoreNote(int id)` method.
 
 ### 3. UI/UX Enhancements [MODIFY]
 - **[HomePage](file:///U:/StudioProjects/mynote/lib/presentation/pages/home_page.dart)**:
-    - Replace `FilterChip` with `ChoiceChip` for smoother single-selection behavior.
-    - Add a gradient background to the `SliverAppBar`.
-    - Improve the empty state with a more colorful look.
-- **[NoteCard](file:///U:/StudioProjects/mynote/lib/presentation/widgets/note_card.dart)**:
-    - Refine the design with better shadows and a cleaner "Bento" layout.
-    - Use more vibrant colors for the note backgrounds.
-- **[Gradient Components]**:
-    - Implement a custom **Gradient Floating Action Button** for a premium feel.
-    - Use gradients in the theme's primary elements.
+    - Update category selector to load from DB.
+    - Add a "Manage Categories" option.
+    - Add "Duplicate" to the note options menu.
+    - Add a "Trash" view in the drawer or menu.
+- **[CategoryManagerPage] [NEW]**: A screen to add/delete custom categories.
+- **[NoteEditorPage](file:///U:/StudioProjects/mynote/lib/presentation/pages/note_editor_page.dart)**:
+    - Fetch categories from DB for the selector.
+    - Add "Note Info" (Word count, character count) in a bottom sheet.
 
-### 4. Theme Update [MODIFY]
-- **[main.dart](file:///U:/StudioProjects/mynote/lib/main.dart)**: Update the `ColorScheme` and `ThemeData` to use a professional Blue/Cyan palette instead of the previous purple.
+### 4. New Suggested Features
+- **Trash Can**: A safety net for deleted notes.
+- **Note Duplication**: Quickly copy-paste a note's content into a new one.
+- **Dynamic Colors**: Let users pick a color for their categories.
 
 ## Verification Plan
 
 ### Manual Verification
-1.  **Build Check**: Ensure the app compiles and runs without errors.
-2.  **Category Bug Check**: Select "Work", then select "All". Verify that all notes are displayed and the "All" chip is correctly highlighted.
-3.  **UI Review**: Verify the new gradients look "attractive" and "modern" in both light and dark modes.
-4.  **Note Interaction**: Verify creating, editing, and archiving notes still works perfectly with the new design.
+1.  **Category Management**: Create a category "Personal Stuff", use it for a note, then delete the category. Ensure the note still exists but category is cleared.
+2.  **Duplication**: Duplicate a note and verify all content (title, text, color, category) is copied to a new ID.
+3.  **Trash/Restore**: Delete a note, find it in the "Trash" view, and restore it. Verify it reappears in "My Notes".
+4.  **Privacy Check**: Ensure no network activity is triggered by any new feature.

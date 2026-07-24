@@ -7,6 +7,8 @@ class NoteModel extends Equatable {
   final int color;
   final bool isPinned;
   final bool isArchived;
+  final bool isDeleted;
+  final DateTime? deletedAt;
   final String? category;
   final DateTime createdAt;
 
@@ -17,6 +19,8 @@ class NoteModel extends Equatable {
     required this.color,
     this.isPinned = false,
     this.isArchived = false,
+    this.isDeleted = false,
+    this.deletedAt,
     this.category,
     required this.createdAt,
   });
@@ -28,7 +32,9 @@ class NoteModel extends Equatable {
     int? color,
     bool? isPinned,
     bool? isArchived,
-    String? category,
+    bool? isDeleted,
+    DateTime? Function()? deletedAt,
+    String? Function()? category,
     DateTime? createdAt,
   }) {
     return NoteModel(
@@ -38,7 +44,9 @@ class NoteModel extends Equatable {
       color: color ?? this.color,
       isPinned: isPinned ?? this.isPinned,
       isArchived: isArchived ?? this.isArchived,
-      category: category ?? this.category,
+      isDeleted: isDeleted ?? this.isDeleted,
+      deletedAt: deletedAt != null ? deletedAt() : this.deletedAt,
+      category: category != null ? category() : this.category,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -51,6 +59,8 @@ class NoteModel extends Equatable {
       'color': color,
       'isPinned': isPinned ? 1 : 0,
       'isArchived': isArchived ? 1 : 0,
+      'isDeleted': isDeleted ? 1 : 0,
+      'deletedAt': deletedAt?.toIso8601String(),
       'category': category,
       'createdAt': createdAt.toIso8601String(),
     };
@@ -64,11 +74,13 @@ class NoteModel extends Equatable {
       color: map['color'] as int,
       isPinned: (map['isPinned'] as int) == 1,
       isArchived: (map['isArchived'] ?? 0) == 1,
+      isDeleted: (map['isDeleted'] ?? 0) == 1,
+      deletedAt: map['deletedAt'] != null ? DateTime.parse(map['deletedAt'] as String) : null,
       category: map['category'] as String?,
       createdAt: DateTime.parse(map['createdAt'] as String),
     );
   }
 
   @override
-  List<Object?> get props => [id, title, content, color, isPinned, isArchived, category, createdAt];
+  List<Object?> get props => [id, title, content, color, isPinned, isArchived, isDeleted, deletedAt, category, createdAt];
 }

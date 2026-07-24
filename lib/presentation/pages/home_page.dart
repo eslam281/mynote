@@ -5,6 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../logic/notes_cubit/notes_cubit.dart';
 import '../../logic/notes_cubit/notes_state.dart';
 import '../widgets/note_card.dart';
+import 'category_manager_page.dart';
 import 'note_editor_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,9 +15,11 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+
+
 class _HomePageState extends State<HomePage> {
   final TextEditingController _searchController = TextEditingController();
-  final List<String> _categories = ['All', 'Work', 'Personal', 'Ideas', 'Important'];
+  // Removed hardcoded _categories
 
   @override
   void initState() {
@@ -78,23 +81,15 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildAppBar(BuildContext context, NotesState state) {
     final bool isArchivedView = state is NotesLoaded && state.isShowingArchived;
+    final bool isTrashView = state is NotesLoaded && state.isShowingTrash;
     
+    String title = 'My Notes';
+    if (isTrashView) title = 'Trash';
+    else if (isArchivedView) title = 'Archive';
+
     return SliverAppBar.large(
-      title: Text(isArchivedView ? 'Archive' : 'My Notes'),
-      flexibleSpace: FlexibleSpaceBar(
-        background: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                const Color(0xFFF0F4F8),
-                const Color(0xFFE0E8F0),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
-        ),
-      ),
+      title: Text(title),
+      // ... same flexibleSpace ...
       actions: [
         IconButton(
           icon: Icon(state is NotesLoaded && state.isGridView ? Icons.view_list_rounded : Icons.grid_view_rounded),
@@ -105,13 +100,25 @@ class _HomePageState extends State<HomePage> {
             if (value == 'delete_all') {
               _showDeleteAllDialog();
             } else if (value == 'toggle_archive') {
-              context.read<NotesCubit>().loadNotes(showArchived: !isArchivedView);
+              context.read<NotesCubit>().loadNotes(showArchived: !isArchivedView, showTrash: false);
+            } else if (value == 'toggle_trash') {
+              context.read<NotesCubit>().loadNotes(showTrash: !isTrashView, showArchived: false);
+            } else if (value == 'manage_categories') {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const CategoryManagerPage()));
             }
           },
           itemBuilder: (context) => [
             PopupMenuItem(
               value: 'toggle_archive',
               child: Text(isArchivedView ? 'Show All Notes' : 'Show Archive'),
+            ),
+            PopupMenuItem(
+              value: 'toggle_trash',
+              child: Text(isTrashView ? 'Show All Notes' : 'Show Trash'),
+            ),
+            const PopupMenuItem(
+              value: 'manage_categories',
+              child: Text('Manage Categories'),
             ),
             const PopupMenuItem(
               value: 'delete_all',
@@ -148,7 +155,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCategorySelector(BuildContext context, NotesState state) {
-    if (state is! NotesLoaded || state.isShowingArchived) return const SliverToBoxAdapter(child: SizedBox.shrink());
+    if (state is! NotesLoaded || state.isShowingArchived || state.isShowingTrash) return const SliverToBoxAdapter(child: SizedBox.shrink());
+
+    final categories = ['All', ...state.categories.map((c) => c.name)];
 
     return SliverToBoxAdapter(
       child: Container(
@@ -157,9 +166,9 @@ class _HomePageState extends State<HomePage> {
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          itemCount: _categories.length,
+          itemCount: categories.length,
           itemBuilder: (context, index) {
-            final category = _categories[index];
+            final category = categories[index];
             final isSelected = (state.selectedCategory ?? 'All') == category;
             return Padding(
               padding: const EdgeInsets.only(right: 8),
@@ -265,30 +274,57 @@ class _HomePageState extends State<HomePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 8),
-            ListTile(
-              leading: Icon(note.isPinned ? Icons.push_pin : Icons.push_pin_outlined),
-              title: Text(note.isPinned ? 'Unpin' : 'Pin'),
-              onTap: () {
-                this.context.read<NotesCubit>().togglePin(note);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(note.isArchived ? Icons.unarchive_outlined : Icons.archive_outlined),
-              title: Text(note.isArchived ? 'Unarchive' : 'Archive'),
-              onTap: () {
-                this.context.read<NotesCubit>().toggleArchive(note);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.delete_outline, color: Colors.red),
-              title: const Text('Delete', style: TextStyle(color: Colors.red)),
-              onTap: () {
-                this.context.read<NotesCubit>().deleteNote(note.id!);
-                Navigator.pop(context);
-              },
-            ),
+            if (!note.isDeleted) ...[
+              ListTile(
+                leading: Icon(note.isPinned ? Icons.push_pin : Icons.push_pin_outlined),
+                title: Text(note.isPinned ? 'Unpin' : 'Pin'),
+                onTap: () {
+                  this.context.read<NotesCubit>().togglePin(note);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.copy_outlined),
+                title: const Text('Duplicate'),
+                onTap: () {
+                  this.context.read<NotesCubit>().duplicateNote(note);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Icon(note.isArchived ? Icons.unarchive_outlined : Icons.archive_outlined),
+                title: Text(note.isArchived ? 'Unarchive' : 'Archive'),
+                onTap: () {
+                  this.context.read<NotesCubit>().toggleArchive(note);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.delete_outline, color: Colors.orange),
+                title: const Text('Move to Trash', style: TextStyle(color: Colors.orange)),
+                onTap: () {
+                  this.context.read<NotesCubit>().softDeleteNote(note);
+                  Navigator.pop(context);
+                },
+              ),
+            ] else ...[
+              ListTile(
+                leading: const Icon(Icons.restore_outlined),
+                title: const Text('Restore Note'),
+                onTap: () {
+                  this.context.read<NotesCubit>().restoreNote(note);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.delete_forever_outlined, color: Colors.red),
+                title: const Text('Delete Permanently', style: TextStyle(color: Colors.red)),
+                onTap: () {
+                  this.context.read<NotesCubit>().deleteNotePermanently(note.id!);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
             const SizedBox(height: 16),
           ],
         ),

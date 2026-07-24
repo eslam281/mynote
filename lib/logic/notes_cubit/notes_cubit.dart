@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/database/sqldb.dart';
 import '../../data/models/note_model.dart';
+import '../../data/models/category_model.dart';
 import 'notes_state.dart';
 
 class NotesCubit extends Cubit<NotesState> {
@@ -8,47 +9,44 @@ class NotesCubit extends Cubit<NotesState> {
 
   NotesCubit(this.sqlDb) : super(NotesInitial());
 
-  Future<void> loadNotes({bool? showArchived}) async {
+  Future<void> loadNotes({bool? showArchived, bool? showTrash}) async {
     final currentState = state;
     bool showingArchived = showArchived ?? (currentState is NotesLoaded ? currentState.isShowingArchived : false);
+    bool showingTrash = showTrash ?? (currentState is NotesLoaded ? currentState.isShowingTrash : false);
     
-    // Use "silent loading" if we already have notes to avoid full screen spinner
     if (currentState is! NotesLoaded) {
       emit(NotesLoading());
     }
 
     try {
-      final notes = showingArchived 
-          ? await sqlDb.readArchivedNotes()
-          : await sqlDb.readAllNotes();
+      final categories = await sqlDb.readAllCategories();
+      List<NoteModel> notes;
+      
+      if (showingTrash) {
+        notes = await sqlDb.readDeletedNotes();
+      } else if (showingArchived) {
+        notes = await sqlDb.readArchivedNotes();
+      } else {
+        notes = await sqlDb.readAllNotes();
+      }
       
       if (currentState is NotesLoaded) {
-        emit(currentState.copyWith(notes: notes, isShowingArchived: showingArchived));
+        emit(currentState.copyWith(
+          notes: notes, 
+          categories: categories,
+          isShowingArchived: showingArchived, 
+          isShowingTrash: showingTrash
+        ));
       } else {
-        emit(NotesLoaded(notes, isShowingArchived: showingArchived));
+        emit(NotesLoaded(
+          notes, 
+          categories: categories,
+          isShowingArchived: showingArchived, 
+          isShowingTrash: showingTrash
+        ));
       }
     } catch (e) {
       emit(NotesError(e.toString()));
-    }
-  }
-
-  Future<void> toggleArchive(NoteModel note) async {
-    final updatedNote = note.copyWith(isArchived: !note.isArchived);
-    await updateNote(updatedNote);
-  }
-
-  void toggleViewMode() {
-    if (state is NotesLoaded) {
-      final currentState = state as NotesLoaded;
-      emit(currentState.copyWith(isGridView: !currentState.isGridView));
-    }
-  }
-
-  Future<void> filterByCategory(String? category) async {
-    if (state is NotesLoaded) {
-      final currentState = state as NotesLoaded;
-      emit(currentState.copyWith(selectedCategory: () => category));
-      loadNotes(); 
     }
   }
 
@@ -70,7 +68,24 @@ class NotesCubit extends Cubit<NotesState> {
     }
   }
 
-  Future<void> deleteNote(int id) async {
+  Future<void> softDeleteNote(NoteModel note) async {
+    final updatedNote = note.copyWith(
+      isDeleted: true, 
+      deletedAt: () => DateTime.now(),
+      isPinned: false
+    );
+    await updateNote(updatedNote);
+  }
+
+  Future<void> restoreNote(NoteModel note) async {
+    final updatedNote = note.copyWith(
+      isDeleted: false, 
+      deletedAt: () => null
+    );
+    await updateNote(updatedNote);
+  }
+
+  Future<void> deleteNotePermanently(int id) async {
     try {
       await sqlDb.deleteNote(id);
       loadNotes();
@@ -79,8 +94,56 @@ class NotesCubit extends Cubit<NotesState> {
     }
   }
 
+  Future<void> duplicateNote(NoteModel note) async {
+    final newNote = note.copyWith(
+      id: null,
+      title: "${note.title} (Copy)",
+      createdAt: DateTime.now()
+    );
+    await addNote(newNote);
+  }
+
+  // Category Methods
+  Future<void> addCategory(String name, int color) async {
+    try {
+      await sqlDb.insertCategory(CategoryModel(name: name, color: color));
+      loadNotes();
+    } catch (e) {
+      emit(NotesError(e.toString()));
+    }
+  }
+
+  Future<void> deleteCategory(int id) async {
+    try {
+      await sqlDb.deleteCategory(id);
+      loadNotes();
+    } catch (e) {
+      emit(NotesError(e.toString()));
+    }
+  }
+
+  void toggleViewMode() {
+    if (state is NotesLoaded) {
+      final currentState = state as NotesLoaded;
+      emit(currentState.copyWith(isGridView: !currentState.isGridView));
+    }
+  }
+
+  Future<void> filterByCategory(String? category) async {
+    if (state is NotesLoaded) {
+      final currentState = state as NotesLoaded;
+      emit(currentState.copyWith(selectedCategory: () => category));
+      loadNotes(); 
+    }
+  }
+
   Future<void> togglePin(NoteModel note) async {
     final updatedNote = note.copyWith(isPinned: !note.isPinned);
+    await updateNote(updatedNote);
+  }
+
+  Future<void> toggleArchive(NoteModel note) async {
+    final updatedNote = note.copyWith(isArchived: !note.isArchived);
     await updateNote(updatedNote);
   }
 

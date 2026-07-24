@@ -1,32 +1,32 @@
-# Walkthrough - UI Refinement & Bug Fixes
+# Walkthrough - Dynamic Features & Productivity
 
-I have completed the requested improvements, focusing on fixing the category selection logic and giving the app a more professional, "attractive" look with a new color palette and gradients.
+I have implemented the advanced features you requested, making the app much more flexible and resilient.
 
-## Key Changes
+## 🌟 New Features
 
-### 🛠️ Bug Fixes & Stability
-- **Fixed the "All" Category Bug**: The app now correctly handles switching back to the "All" view after filtering by a specific category.
-- **Resolved Build Errors**: Fixed the theme configuration error that was preventing the app from launching.
+### 📁 Dynamic Category Management
+- **User-Defined Categories**: You can now create your own categories (e.g., "Shopping", "Secret", "Study") with custom colors.
+- **Management Screen**: Accessible from the main menu, where you can add or remove categories at any time.
+- **Dynamic Filtering**: The main screen now updates its filter chips based on your custom categories.
 
-### 🌊 New "Ocean & Arctic" Design
-- **Color Palette**: Replaced the previous purple theme with a deep **Ocean Blue and Arctic Cyan** palette. This gives the app a cleaner, more energetic feel.
-- **Gradients**:
-    - Added a professional gradient to the **Floating Action Button**.
-    - Implemented subtle background gradients for the **AppBar** and **Note Categories**.
-- **Modern Typography**: Standardized on **Poppins** with improved weights and spacing for better readability.
+### 🗑️ Smart Trash Can (Recycle Bin)
+- **Soft Delete**: Deleting a note now moves it to the "Trash" instead of permanent removal.
+- **Safety Net**: Access the Trash from the main menu to **Restore** accidentally deleted notes or **Permanently Delete** them to free up space.
+- **Auto-Cleanup Ready**: The system tracks when notes were deleted, allowing for future "auto-purge" features.
 
-### ✨ Polished UI Components
-- **Redesigned Note Cards**:
-    - Added softer shadows and a more structured "Bento" layout.
-    - Improved the contrast between title and content.
-    - Added nice pill-shaped category tags inside the cards.
-- **Enhanced Category Selection**:
-    - Switched from simple chips to **ChoiceChips** for a more interactive and intuitive filtering experience.
-    - Added elevation and bold text to the selected category.
+### 👯 Note Duplication
+- **One-Tap Copy**: Use the "Duplicate" option in the note menu to instantly create an exact copy of a note (content, color, and category). Perfect for creating templates or recurring lists.
 
-## Technical Details
-- **State Management**: Updated `NotesLoaded.copyWith` to use a functional pattern for nullable fields, ensuring state transitions are robust.
-- **Material 3**: Leveraged more Material 3 properties for chips and cards to ensure the app feels native to modern Android versions.
+### 📊 Note Insights
+- **Statistics**: Added an "Info" button in the editor that shows:
+    - **Word Count**
+    - **Character Count**
+    - **Creation Date**
 
-> [!TIP]
-> Try swiping or scrolling! The entry animations have been slightly tuned to feel smoother with the new card design.
+## 🛠️ Technical Improvements
+- **Schema v3**: Upgraded the internal database to support category storage and soft deletion states.
+- **State Logic**: Refined the `NotesCubit` to handle three distinct views: Home, Archive, and Trash, all within the same clean architecture.
+- **UI Consistency**: Maintained the "Ocean Blue" theme across the new Category Manager and Trash views.
+
+> [!IMPORTANT]
+> **Data Migration**: Your existing notes have been preserved and moved to the new system automatically. All data remains 100% local.

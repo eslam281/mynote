@@ -1,14 +1,17 @@
-# Tasks - UI Refinement & Bug Fixes
+# Tasks - Dynamic Features & Productivity
 
-- `[x]` Fix Build Error (`CardThemeData` -> `CardTheme`)
-- `[x]` Fix Category Bug
-    - `[x]` Update `NotesLoaded.copyWith` to handle null category
-    - `[x]` Update `NotesCubit.filterByCategory` to pass null for "All"
-- `[x]` Modernize Theme
-    - `[x]` Switch to Blue/Cyan Ocean theme
-    - `[x]` Add gradients to Floating Action Button
-    - `[x]` Update Chip styles
-- `[x]` Refine UI Components
-    - `[x]` Update `NoteCard` with better shadows and layout
-    - `[x]` Add background gradient to `SliverAppBar`
-    - `[x]` Switch to `ChoiceChip` for category selection
+- `[x]` Database & Models
+    - `[x]` Update `NoteModel` (add `isDeleted`, `deletedAt`)
+    - `[x]` Create `CategoryModel`
+    - `[x]` Update `SqlDb` (schema v3: `categories` table, `notes` updates)
+- `[x]` Logic Layer
+    - `[x]` Update `NotesState` for dynamic categories and trash view
+    - `[x]` Update `NotesCubit` (CRUD for categories, Soft Delete, Duplicate)
+- `[x]` UI Overhaul
+    - `[x]` Create `CategoryManagerPage`
+    - `[x]` Update `HomePage` (Dynamic Chip loading, Duplication, Trash view)
+    - `[x]` Update `NoteEditorPage` (Fetch categories from DB)
+- `[x]` Verification
+    - `[x]` Test category creation/deletion
+    - `[x]` Test note duplication
+    - `[x]` Test trash restore/permanent delete

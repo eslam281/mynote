@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import '../../data/models/note_model.dart';
 import '../../logic/notes_cubit/notes_cubit.dart';
+
+import '../../logic/notes_cubit/notes_state.dart';
 
 class NoteEditorPage extends StatefulWidget {
   final NoteModel? note;
@@ -21,7 +24,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
   late bool _isPinned;
   String? _selectedCategory;
 
-  final List<String> _categories = ['Work', 'Personal', 'Ideas', 'Important'];
+  // Removed hardcoded _categories
 
   final List<int> _colors = [
     0xFFFFFFFF, // White
@@ -88,6 +91,47 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
     Share.share(text);
   }
 
+  void _showNoteInfo() {
+    final content = _contentController.text;
+    final words = content.trim().isEmpty ? 0 : content.trim().split(RegExp(r'\s+')).length;
+    final chars = content.length;
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (context) => Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Note Info', style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 20),
+            _infoRow(Icons.text_fields, 'Characters', chars.toString()),
+            _infoRow(Icons.short_text, 'Words', words.toString()),
+            _infoRow(Icons.calendar_today, 'Created', DateFormat('MMM dd, yyyy HH:mm').format(widget.note?.createdAt ?? DateTime.now())),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _infoRow(IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: Colors.black54),
+          const SizedBox(width: 12),
+          Text(label, style: const TextStyle(color: Colors.black54)),
+          const Spacer(),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,6 +140,10 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.info_outline),
+            onPressed: _showNoteInfo,
+          ),
           IconButton(
             icon: const Icon(Icons.share_outlined),
             onPressed: _shareNote,
@@ -127,21 +175,26 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Wrap(
-                  spacing: 8,
-                  children: _categories.map((cat) {
-                    final isSelected = _selectedCategory == cat;
-                    return ChoiceChip(
-                      label: Text(cat),
-                      selected: isSelected,
-                      onSelected: (selected) {
-                        setState(() {
-                          _selectedCategory = selected ? cat : null;
-                        });
-                      },
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                BlocBuilder<NotesCubit, NotesState>(
+                  builder: (context, state) {
+                    if (state is! NotesLoaded) return const SizedBox.shrink();
+                    return Wrap(
+                      spacing: 8,
+                      children: state.categories.map((cat) {
+                        final isSelected = _selectedCategory == cat.name;
+                        return ChoiceChip(
+                          label: Text(cat.name),
+                          selected: isSelected,
+                          onSelected: (selected) {
+                            setState(() {
+                              _selectedCategory = selected ? cat.name : null;
+                            });
+                          },
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                        );
+                      }).toList(),
                     );
-                  }).toList(),
+                  },
                 ),
                 const SizedBox(height: 16),
                 TextField(
