@@ -13,7 +13,7 @@ class AppDrawer extends StatelessWidget {
     return Drawer(
       backgroundColor: const Color(0xFFF0F4F8),
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.horizontal(right: Radius.circular(32)),
+        borderRadius: BorderRadiusDirectional.horizontal(end: Radius.circular(32)),
       ),
       child: BlocBuilder<NotesCubit, NotesState>(
         builder: (context, state) {

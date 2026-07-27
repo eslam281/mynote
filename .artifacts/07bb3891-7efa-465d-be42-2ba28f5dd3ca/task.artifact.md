@@ -1,22 +1,14 @@
-# Tasks - Professional Features & Navigation
+# Tasks - Auth Fix & RTL Support
 
-- `[x]` Update Dependencies & Setup
-    - `[x]` Add `image_picker`, `file_picker`, `path_provider`, `local_auth`, `pdf`, `printing`
-    - `[x]` Configure Android permissions for attachments
-- `[x]` Data Layer Enhancements
-    - `[x]` Update `NoteModel` (add `attachments`, `isLocked`, `reminderAt`)
-    - `[x]` Update `SqlDb` (schema v4)
-- `[x]` Navigation Overhaul
-    - `[x]` Implement `AppDrawer` widget
-    - `[x]` Update `HomePage` with Drawer and Quick-Add Category button
-- `[x]` Feature Implementation
-    - `[x]` Media Attachments logic (File storage helper)
-    - `[x]` Biometric Locking logic (`AuthService`)
-    - `[x]` Export to PDF service
-- `[x]` UI/UX Refinement
-    - `[x]` Update `NoteEditorPage` (Media bar, Lock toggle)
-    - `[x]` Blur content of locked notes in `NoteCard`
-- `[x]` Verification
-    - `[x]` Test Drawer navigation
-    - `[x]` Test Media persistence
-    - `[x]` Test Biometric Auth
+- `[x]` Project Configuration
+    - `[x]` Add `flutter_localizations` to `pubspec.yaml`
+    - `[x]` Setup `MaterialApp` for Arabic/English support in `main.dart`
+- `[x]` Bug Fix: Authentication
+    - `[x]` Add `_isAuthenticating` flag in `HomePage`
+    - `[x]` Guard `onTap` logic with the flag
+- `[x]` UI Refinement for RTL
+    - `[x]` Polish `AppDrawer` for direction-aware layout
+    - `[x]` Ensure `NoteCard` text aligns correctly
+- `[ ]` Verification
+    - `[ ]` Verify single auth prompt
+    - `[ ]` Verify RTL layout in Arabic

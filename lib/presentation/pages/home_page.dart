@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:mynote/data/models/note_model.dart';
 import '../../logic/notes_cubit/notes_cubit.dart';
 import '../../logic/notes_cubit/notes_state.dart';
 import '../../logic/services/auth_service.dart';
@@ -20,6 +21,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final TextEditingController _searchController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _isAuthenticating = false;
 
   @override
   void initState() {
@@ -87,9 +89,11 @@ class _HomePageState extends State<HomePage> {
     final bool isTrashView = state is NotesLoaded && state.isShowingTrash;
 
     String title = 'My Notes';
-    if (isTrashView)
+    if (isTrashView) {
       title = 'Trash';
-    else if (isArchivedView) title = 'Archive';
+    } else if (isArchivedView) {
+      title = 'Archive';
+    }
 
     return SliverAppBar.large(
       title: Text(title),
@@ -159,8 +163,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCategorySelector(BuildContext context, NotesState state) {
-    if (state is! NotesLoaded || state.isShowingArchived || state.isShowingTrash)
+    if (state is! NotesLoaded || state.isShowingArchived || state.isShowingTrash) {
       return const SliverToBoxAdapter(child: SizedBox.shrink());
+    }
 
     final categories = ['All', ...state.categories.map((c) => c.name)];
 
@@ -267,13 +272,18 @@ class _HomePageState extends State<HomePage> {
             itemBuilder: (context, index) => NoteCard(
               note: notes[index],
               onTap: () async {
+                if (_isAuthenticating) return;
+                
                 if (notes[index].isLocked) {
+                  setState(() => _isAuthenticating = true);
                   final authenticated = await AuthService.authenticate();
+                  if (!mounted) return;
+                  setState(() => _isAuthenticating = false);
                   if (!authenticated) return;
                 }
                 if (!mounted) return;
-                Navigator.push(
-                    context,
+                final navigator = Navigator.of(context);
+                navigator.push(
                     MaterialPageRoute(
                         builder: (context) => NoteEditorPage(note: notes[index])));
               },
@@ -291,13 +301,18 @@ class _HomePageState extends State<HomePage> {
                 note: notes[index],
                 isListMode: true,
                 onTap: () async {
+                  if (_isAuthenticating) return;
+
                   if (notes[index].isLocked) {
+                    setState(() => _isAuthenticating = true);
                     final authenticated = await AuthService.authenticate();
+                    if (!mounted) return;
+                    setState(() => _isAuthenticating = false);
                     if (!authenticated) return;
                   }
                   if (!mounted) return;
-                  Navigator.push(
-                      context,
+                  final navigator = Navigator.of(context);
+                  navigator.push(
                       MaterialPageRoute(
                           builder: (context) => NoteEditorPage(note: notes[index])));
                 },
@@ -313,7 +328,7 @@ class _HomePageState extends State<HomePage> {
     return const SliverFillRemaining(child: SizedBox.shrink());
   }
 
-  void _showNoteOptions(note) {
+  void _showNoteOptions(NoteModel note) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(

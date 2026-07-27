@@ -1,30 +1,26 @@
-# Walkthrough - Professional Features & Navigation
+# Walkthrough - RTL Support & Auth Fix
 
-I have completely overhauled the app's navigation and added several professional-grade features to make the note-taking experience more robust and secure.
+I have fixed the biometric authentication bug and implemented full support for Arabic (RTL) and English (LTR) languages.
 
 ## 🌟 Key Improvements
 
-### 🧭 Better Navigation (Side Drawer)
-- **Centralized Menu**: Added a Material 3 **Side Drawer** for clear access to "All Notes", "Archive", and "Trash". This completely fixes the previous issue of not being able to find your way back from the trash or archive.
-- **Manage Categories**: The Category Manager is now easily accessible from both the drawer and a new **Quick-Add button** directly in the horizontal category bar.
+### 🔒 Fixed Biometric Bug
+- **One Prompt Only**: Added a protection mechanism (`_isAuthenticating` flag) that prevents the app from opening multiple biometric windows if you tap a locked note repeatedly.
+- **Improved Flow**: The app now correctly handles the authentication state, ensuring it doesn't prompt you again immediately after successfully opening a note.
 
-### 📎 Media Attachments
-- **Images & Files**: You can now attach multiple images and files to any note.
-- **Local Persistence**: The app now copies all attachments to its own internal storage. **This means your attachments are safe** even if you delete the original file from your phone's gallery or downloads folder.
-- **Preview Bar**: A new horizontal preview bar in the editor lets you see and manage your attachments.
+### 🌍 Full Arabic & RTL Support
+- **Automatic Alignment**: The app now detects your phone's language. If it's set to Arabic, the entire UI will automatically flip to Right-to-Left (RTL) mode.
+- **Direction-Aware Drawer**: The side menu now opens from the **right side** in Arabic and the **left side** in English, following standard design guidelines.
+- **Natural Text Flow**: All notes, titles, and menus now align naturally based on the language, making the app much more comfortable for Arabic speakers.
 
-### 🔒 Privacy & Security (Locked Notes)
-- **Biometric Protection**: Added a "Lock" feature for sensitive notes. You can now toggle a lock on any note, which will blur its content in the main list.
-- **Fingerprint/Face ID**: Opening a locked note now requires your phone's security authentication (Fingerprint, Face ID, or PIN).
+### 🎨 Directional UI Polish
+- **Adaptive Corners**: Updated the side menu's rounded corners to automatically stay on the "inner" side regardless of which direction it opens from.
+- **Mirroring Icons**: System icons (like the menu hamburger and back arrows) now mirror correctly for a seamless localized experience.
 
-### 📄 Export to PDF
-- **Professional Documents**: Added a new "Export to PDF" button in the editor toolbar. You can now instantly convert your notes into a clean, formatted PDF document for printing or official sharing.
+## 🛠️ Technical Details
+- **Localization**: Integrated `flutter_localizations` into the project core.
+- **Directional UI**: Switched to `BorderRadiusDirectional` and direction-neutral alignment properties.
+- **Auth Guard**: Implemented state-based logic in the `HomePage` to manage biometric session lifecycle.
 
-## 🛠️ Technical Summary
-- **Database v4**: Updated the schema to store attachment paths, locking status, and reminder timestamps.
-- **Biometric Setup**: Configured the Android `MainActivity` to support `FlutterFragmentActivity` for secure authentication.
-- **File Management**: Implemented a dedicated `FileService` for handling local file persistence and cleanup.
-- **PDF Engine**: Integrated the `pdf` and `printing` libraries for document generation.
-
-> [!IMPORTANT]
-> **Android Security**: To use the locking feature, ensure you have at least one fingerprint or PIN set up on your device.
+> [!TIP]
+> To see the changes, try changing your phone's system language between Arabic and English. The app will adapt instantly!

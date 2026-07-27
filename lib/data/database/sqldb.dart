@@ -16,7 +16,7 @@ class SqlDb {
     }
   }
 
-  initialDb() async {
+  Future<Database> initialDb() async {
     var databasePath = await getDatabasesPath();
     String path = join(databasePath, "notes_v5.db");
     Database mydb = await openDatabase(path,
@@ -24,7 +24,7 @@ class SqlDb {
     return mydb;
   }
 
-  _onUpgrade(Database db, int oldVersion, int newVersion) async {
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
       await db.execute('ALTER TABLE notes ADD COLUMN isArchived INTEGER NOT NULL DEFAULT 0');
       await db.execute('ALTER TABLE notes ADD COLUMN category TEXT');
@@ -47,7 +47,7 @@ class SqlDb {
     }
   }
 
-  _onCreate(Database db, int version) async {
+  Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE "notes" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -72,7 +72,6 @@ class SqlDb {
           "color" INTEGER NOT NULL
         )
       ''');
-    print("Create database and table ====================");
   }
 
   Future<List<NoteModel>> readAllNotes({bool includeArchived = false}) async {
