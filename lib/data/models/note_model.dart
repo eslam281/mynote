@@ -1,5 +1,8 @@
 import 'package:equatable/equatable.dart';
 
+import 'dart:convert';
+import 'package:equatable/equatable.dart';
+
 class NoteModel extends Equatable {
   final int? id;
   final String title;
@@ -10,6 +13,9 @@ class NoteModel extends Equatable {
   final bool isDeleted;
   final DateTime? deletedAt;
   final String? category;
+  final List<String> attachments;
+  final bool isLocked;
+  final DateTime? reminderAt;
   final DateTime createdAt;
 
   const NoteModel({
@@ -22,6 +28,9 @@ class NoteModel extends Equatable {
     this.isDeleted = false,
     this.deletedAt,
     this.category,
+    this.attachments = const [],
+    this.isLocked = false,
+    this.reminderAt,
     required this.createdAt,
   });
 
@@ -35,6 +44,9 @@ class NoteModel extends Equatable {
     bool? isDeleted,
     DateTime? Function()? deletedAt,
     String? Function()? category,
+    List<String>? attachments,
+    bool? isLocked,
+    DateTime? Function()? reminderAt,
     DateTime? createdAt,
   }) {
     return NoteModel(
@@ -47,6 +59,9 @@ class NoteModel extends Equatable {
       isDeleted: isDeleted ?? this.isDeleted,
       deletedAt: deletedAt != null ? deletedAt() : this.deletedAt,
       category: category != null ? category() : this.category,
+      attachments: attachments ?? this.attachments,
+      isLocked: isLocked ?? this.isLocked,
+      reminderAt: reminderAt != null ? reminderAt() : this.reminderAt,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -62,6 +77,9 @@ class NoteModel extends Equatable {
       'isDeleted': isDeleted ? 1 : 0,
       'deletedAt': deletedAt?.toIso8601String(),
       'category': category,
+      'attachments': jsonEncode(attachments),
+      'isLocked': isLocked ? 1 : 0,
+      'reminderAt': reminderAt?.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
     };
   }
@@ -77,10 +95,27 @@ class NoteModel extends Equatable {
       isDeleted: (map['isDeleted'] ?? 0) == 1,
       deletedAt: map['deletedAt'] != null ? DateTime.parse(map['deletedAt'] as String) : null,
       category: map['category'] as String?,
+      attachments: map['attachments'] != null ? List<String>.from(jsonDecode(map['attachments'] as String)) : [],
+      isLocked: (map['isLocked'] ?? 0) == 1,
+      reminderAt: map['reminderAt'] != null ? DateTime.parse(map['reminderAt'] as String) : null,
       createdAt: DateTime.parse(map['createdAt'] as String),
     );
   }
 
   @override
-  List<Object?> get props => [id, title, content, color, isPinned, isArchived, isDeleted, deletedAt, category, createdAt];
+  List<Object?> get props => [
+        id,
+        title,
+        content,
+        color,
+        isPinned,
+        isArchived,
+        isDeleted,
+        deletedAt,
+        category,
+        attachments,
+        isLocked,
+        reminderAt,
+        createdAt
+      ];
 }

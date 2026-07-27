@@ -18,9 +18,9 @@ class SqlDb {
 
   initialDb() async {
     var databasePath = await getDatabasesPath();
-    String path = join(databasePath, "notes_v4.db");
+    String path = join(databasePath, "notes_v5.db");
     Database mydb = await openDatabase(path,
-        onCreate: _onCreate, version: 3, onUpgrade: _onUpgrade);
+        onCreate: _onCreate, version: 4, onUpgrade: _onUpgrade);
     return mydb;
   }
 
@@ -40,6 +40,11 @@ class SqlDb {
         )
       ''');
     }
+    if (oldVersion < 4) {
+      await db.execute('ALTER TABLE notes ADD COLUMN attachments TEXT');
+      await db.execute('ALTER TABLE notes ADD COLUMN isLocked INTEGER NOT NULL DEFAULT 0');
+      await db.execute('ALTER TABLE notes ADD COLUMN reminderAt TEXT');
+    }
   }
 
   _onCreate(Database db, int version) async {
@@ -54,6 +59,9 @@ class SqlDb {
         "isDeleted" INTEGER NOT NULL DEFAULT 0,
         "deletedAt" TEXT,
         "category" TEXT,
+        "attachments" TEXT,
+        "isLocked" INTEGER NOT NULL DEFAULT 0,
+        "reminderAt" TEXT,
         "createdAt" TEXT NOT NULL
       )
     ''');

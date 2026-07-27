@@ -1,32 +1,30 @@
-# Walkthrough - Dynamic Features & Productivity
+# Walkthrough - Professional Features & Navigation
 
-I have implemented the advanced features you requested, making the app much more flexible and resilient.
+I have completely overhauled the app's navigation and added several professional-grade features to make the note-taking experience more robust and secure.
 
-## 🌟 New Features
+## 🌟 Key Improvements
 
-### 📁 Dynamic Category Management
-- **User-Defined Categories**: You can now create your own categories (e.g., "Shopping", "Secret", "Study") with custom colors.
-- **Management Screen**: Accessible from the main menu, where you can add or remove categories at any time.
-- **Dynamic Filtering**: The main screen now updates its filter chips based on your custom categories.
+### 🧭 Better Navigation (Side Drawer)
+- **Centralized Menu**: Added a Material 3 **Side Drawer** for clear access to "All Notes", "Archive", and "Trash". This completely fixes the previous issue of not being able to find your way back from the trash or archive.
+- **Manage Categories**: The Category Manager is now easily accessible from both the drawer and a new **Quick-Add button** directly in the horizontal category bar.
 
-### 🗑️ Smart Trash Can (Recycle Bin)
-- **Soft Delete**: Deleting a note now moves it to the "Trash" instead of permanent removal.
-- **Safety Net**: Access the Trash from the main menu to **Restore** accidentally deleted notes or **Permanently Delete** them to free up space.
-- **Auto-Cleanup Ready**: The system tracks when notes were deleted, allowing for future "auto-purge" features.
+### 📎 Media Attachments
+- **Images & Files**: You can now attach multiple images and files to any note.
+- **Local Persistence**: The app now copies all attachments to its own internal storage. **This means your attachments are safe** even if you delete the original file from your phone's gallery or downloads folder.
+- **Preview Bar**: A new horizontal preview bar in the editor lets you see and manage your attachments.
 
-### 👯 Note Duplication
-- **One-Tap Copy**: Use the "Duplicate" option in the note menu to instantly create an exact copy of a note (content, color, and category). Perfect for creating templates or recurring lists.
+### 🔒 Privacy & Security (Locked Notes)
+- **Biometric Protection**: Added a "Lock" feature for sensitive notes. You can now toggle a lock on any note, which will blur its content in the main list.
+- **Fingerprint/Face ID**: Opening a locked note now requires your phone's security authentication (Fingerprint, Face ID, or PIN).
 
-### 📊 Note Insights
-- **Statistics**: Added an "Info" button in the editor that shows:
-    - **Word Count**
-    - **Character Count**
-    - **Creation Date**
+### 📄 Export to PDF
+- **Professional Documents**: Added a new "Export to PDF" button in the editor toolbar. You can now instantly convert your notes into a clean, formatted PDF document for printing or official sharing.
 
-## 🛠️ Technical Improvements
-- **Schema v3**: Upgraded the internal database to support category storage and soft deletion states.
-- **State Logic**: Refined the `NotesCubit` to handle three distinct views: Home, Archive, and Trash, all within the same clean architecture.
-- **UI Consistency**: Maintained the "Ocean Blue" theme across the new Category Manager and Trash views.
+## 🛠️ Technical Summary
+- **Database v4**: Updated the schema to store attachment paths, locking status, and reminder timestamps.
+- **Biometric Setup**: Configured the Android `MainActivity` to support `FlutterFragmentActivity` for secure authentication.
+- **File Management**: Implemented a dedicated `FileService` for handling local file persistence and cleanup.
+- **PDF Engine**: Integrated the `pdf` and `printing` libraries for document generation.
 
 > [!IMPORTANT]
-> **Data Migration**: Your existing notes have been preserved and moved to the new system automatically. All data remains 100% local.
+> **Android Security**: To use the locking feature, ensure you have at least one fingerprint or PIN set up on your device.
