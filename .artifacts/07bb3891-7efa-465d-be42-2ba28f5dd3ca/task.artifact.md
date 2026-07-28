@@ -1,14 +1,14 @@
-# Tasks - Auth Fix & RTL Support
+# Tasks - Exit Confirmation & Trash Auto-Purge
 
-- `[x]` Project Configuration
-    - `[x]` Add `flutter_localizations` to `pubspec.yaml`
-    - `[x]` Setup `MaterialApp` for Arabic/English support in `main.dart`
-- `[x]` Bug Fix: Authentication
-    - `[x]` Add `_isAuthenticating` flag in `HomePage`
-    - `[x]` Guard `onTap` logic with the flag
-- `[x]` UI Refinement for RTL
-    - `[x]` Polish `AppDrawer` for direction-aware layout
-    - `[x]` Ensure `NoteCard` text aligns correctly
-- `[ ]` Verification
-    - `[ ]` Verify single auth prompt
-    - `[ ]` Verify RTL layout in Arabic
+- `[x]` Database Logic
+    - `[x]` Add `purgeDeletedNotes` to `SqlDb`
+- `[x]` Business Logic
+    - `[x]` Call `purgeDeletedNotes` in `NotesCubit.loadNotes`
+- `[x]` Note Editor Improvements
+    - `[x]` Add "dirty check" logic to `NoteEditorPage`
+    - `[x]` Implement `PopScope` with `AlertDialog` for unsaved changes
+- `[x]` Home Page UI
+    - `[x]` Add Trash cleanup reminder banner
+- `[x]` Verification
+    - `[x]` Test back button with changes
+    - `[x]` Verify 30-day purge logic

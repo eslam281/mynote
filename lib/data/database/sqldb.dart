@@ -158,6 +158,16 @@ class SqlDb {
     return response.map((e) => NoteModel.fromMap(e)).toList();
   }
 
+  Future<int> purgeDeletedNotes(int days) async {
+    Database? mydb = await db;
+    final threshold = DateTime.now().subtract(Duration(days: days));
+    return await mydb!.delete(
+      'notes',
+      where: 'isDeleted = 1 AND deletedAt < ?',
+      whereArgs: [threshold.toIso8601String()],
+    );
+  }
+
   // Category Methods
   Future<List<CategoryModel>> readAllCategories() async {
     Database? mydb = await db;

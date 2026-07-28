@@ -30,6 +30,24 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
   String? _selectedCategory;
   List<String> _attachments = [];
 
+  bool get _isDirty {
+    final title = _titleController.text.trim();
+    final content = _contentController.text.trim();
+    
+    if (widget.note == null) {
+      return title.isNotEmpty || content.isNotEmpty || _attachments.isNotEmpty;
+    }
+    
+    return title != widget.note!.title ||
+        content != widget.note!.content ||
+        _selectedColor != widget.note!.color ||
+        _isPinned != widget.note!.isPinned ||
+        _isLocked != widget.note!.isLocked ||
+        _selectedCategory != widget.note!.category ||
+        _attachments.length != widget.note!.attachments.length ||
+        !_attachments.every((a) => widget.note!.attachments.contains(a));
+  }
+
   final List<int> _colors = [
     0xFFFFFFFF, // White
     0xFFF28B82, // Red
@@ -161,11 +179,54 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
     );
   }
 
+  Future<bool?> _showExitDialog() async {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Unsaved Changes'),
+        content: const Text('Do you want to save your changes before leaving?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false), // Discard
+            child: const Text('Discard', style: TextStyle(color: Colors.red)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, null), // Cancel (Stay)
+            child: const Text('Stay'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true), // Save
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(_selectedColor),
-      appBar: AppBar(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        
+        if (!_isDirty) {
+          Navigator.pop(context);
+          return;
+        }
+
+        final save = await _showExitDialog();
+        if (save == null) return; // User cancelled
+
+        if (save) {
+          _saveNote();
+        } else {
+          Navigator.pop(context);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Color(_selectedColor),
+        appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -260,6 +321,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
           _buildBottomPanel(),
         ],
       ),
+    )
     );
   }
 

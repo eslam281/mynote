@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mynote/data/models/note_model.dart';
 import '../../logic/notes_cubit/notes_cubit.dart';
 import '../../logic/notes_cubit/notes_state.dart';
@@ -45,6 +46,7 @@ class _HomePageState extends State<HomePage> {
           return CustomScrollView(
             slivers: [
               _buildAppBar(context, state),
+              if (state is NotesLoaded && state.isShowingTrash) _buildTrashReminder(),
               _buildCategorySelector(context, state),
               _buildNotesContent(context, state),
             ],
@@ -157,6 +159,36 @@ class _HomePageState extends State<HomePage> {
             ],
             onChanged: (value) => context.read<NotesCubit>().searchNotes(value),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTrashReminder() {
+    return SliverToBoxAdapter(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.blue.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.info_outline, color: Colors.blue, size: 20),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Notes in Trash will be permanently deleted after 30 days.',
+                style: GoogleFonts.poppins(
+                  fontSize: 13,
+                  color: Colors.blue.shade800,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
