@@ -1,20 +1,32 @@
-# Walkthrough - Exit Safety & Trash Management
+# Walkthrough - Architectural Refactoring
 
-I have implemented features to protect your work and automate the cleanup of deleted notes.
+I have successfully refactored the application's architecture, decomposing the massive page files into organized, focused, and maintainable widgets.
 
-## 🛡️ Exit Safety (Confirmation Dialog)
-- **Prevent Data Loss**: You will no longer lose your notes by accidentally clicking the back button.
-- **Smart Detection**: The app detects if you've made any changes (text, color, category, or attachments). If you have, a confirmation dialog will appear.
-- **Save or Discard**: You can choose to **Save** your changes, **Discard** them, or **Stay** to continue editing.
+## 🏗️ Structural Improvements
 
-## 🧹 Automatic Trash Cleanup
-- **30-Day Auto-Purge**: Notes moved to the Trash will now be **automatically and permanently deleted after 30 days**. This keeps your device storage lean.
-- **Clear Communication**: Added a professional information banner at the top of the Trash screen to remind you of the 30-day policy.
+### 📁 Organized Widget System
+- Created a clear directory structure under `lib/presentation/widgets/`:
+    - `home/`: Components specific to the dashboard (AppBar, Category Selector, etc.).
+    - `editor/`: Components for note composition (Attachments Bar, Bottom Panel).
+    - `common/`: Reusable global elements (Confirmation Dialogs, Bottom Sheets).
 
-## 🛠️ Technical Improvements
-- **Database Logic**: Added a `purgeDeletedNotes` method to `SqlDb` that calculates the 30-day threshold.
-- **State Management**: The purge logic is triggered every time the app loads notes, ensuring your trash is always up-to-date.
-- **Navigation Safety**: Utilized Flutter's `PopScope` for robust back-button handling in the editor.
+### ✂️ Page Decomposition
+- **Home Page**: Reduced complexity by extracting:
+    - [HomeAppBar](file:///U:/StudioProjects/mynote/lib/presentation/widgets/home/home_app_bar.dart)
+    - [CategorySelector](file:///U:/StudioProjects/mynote/lib/presentation/widgets/home/category_selector.dart)
+    - [NotesView](file:///U:/StudioProjects/mynote/lib/presentation/widgets/home/notes_view.dart)
+    - [TrashReminder](file:///U:/StudioProjects/mynote/lib/presentation/widgets/home/trash_reminder.dart)
+- **Note Editor Page**: Streamlined by extracting:
+    - [AttachmentsBar](file:///U:/StudioProjects/mynote/lib/presentation/widgets/editor/attachments_bar.dart)
+    - [EditorBottomPanel](file:///U:/StudioProjects/mynote/lib/presentation/widgets/editor/editor_bottom_panel.dart)
 
-> [!TIP]
-> To test the safety feature: Open a note, change its color, and click the back arrow. You'll see the new confirmation dialog!
+### 🧹 Clean Logic Separation
+- All **Confirmation Dialogs** (Exit, Delete All) and **Bottom Sheets** (Options, Info) are now in independent files, making them easier to style and test without touching the main business logic.
+
+## 🛠️ Technical Details
+- **Improved Maintainability**: The `HomePage` and `NoteEditorPage` now serve as high-level "controllers" that coordinate small, stateless widgets.
+- **Bug Prevention**: Standardized the use of `mounted` checks across async gaps in UI interactions.
+- **Refined Imports**: Moved to a consistent import pattern to avoid circular dependencies and path resolution errors.
+
+> [!NOTE]
+> This refactoring has **zero impact** on the app's features. All functionalities like Biometric Locking, PDF Export, and Trash Purging work exactly as before, but the code is now 100% cleaner and professional.

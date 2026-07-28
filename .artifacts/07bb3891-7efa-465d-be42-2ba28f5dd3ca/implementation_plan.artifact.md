@@ -1,41 +1,46 @@
-# Implementation Plan - Exit Confirmation & Trash Auto-Purge
+# Implementation Plan - Architectural Refactoring
 
-This plan introduces a safety confirmation dialog when leaving the note editor with unsaved changes and implements an automatic 30-day cleanup for the Trash.
+This plan aims to improve the codebase's maintainability and readability by decomposing large page files into smaller, focused, and reusable widgets.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> - **Exit Safety**: You will no longer lose your work by accidentally clicking the back arrow. A dialog will ask if you want to Save or Discard.
-> - **Auto-Cleanup**: Notes moved to Trash will be **permanently deleted after 30 days**. A reminder will be shown at the top of the Trash screen.
+> - **Architecture Only**: This is a pure refactoring task. **No new features** will be added, and the app's behavior will remain exactly the same.
+> - **File Structure**: I will create a structured `widgets/` directory with subfolders for `home`, `editor`, and `common` components.
 
 ## Proposed Changes
 
-### 1. Trash Auto-Purge Logic [MODIFY]
-- **[SqlDb](file:///U:/StudioProjects/mynote/lib/data/database/sqldb.dart)**:
-    - Add `Future<int> purgeDeletedNotes(int days)` method to delete records where `isDeleted = 1` and `deletedAt` is older than the threshold.
-- **[NotesCubit](file:///U:/StudioProjects/mynote/lib/logic/notes_cubit/notes_cubit.dart)**:
-    - Update `loadNotes` to call the purge method every time the notes are loaded (ensuring the trash stays clean).
+### 1. Reusable Common Widgets [NEW]
+- **[confirmation_dialogs.dart](file:///U:/StudioProjects/mynote/lib/presentation/widgets/common/confirmation_dialogs.dart)**:
+    - `ExitConfirmationDialog`: The safety check when leaving the editor.
+    - `DeleteAllConfirmationDialog`: The alert for clearing all notes.
+- **[custom_bottom_sheets.dart](file:///U:/StudioProjects/mynote/lib/presentation/widgets/common/custom_bottom_sheets.dart)**:
+    - `NoteOptionsSheet`: The menu for Pin, Archive, Duplicate, and Trash.
+    - `NoteInfoSheet`: Displays character/word counts.
 
-### 2. Exit Confirmation Dialog [MODIFY]
-- **[NoteEditorPage](file:///U:/StudioProjects/mynote/lib/presentation/pages/note_editor_page.dart)**:
-    - Wrap the `Scaffold` in a `PopScope`.
-    - Implement a "dirty check" to see if the current text/attachments differ from the original note.
-    - Show a modern Material 3 `AlertDialog` when the user tries to go back without saving.
+### 2. Home Screen Components [NEW]
+- **[home_app_bar.dart](file:///U:/StudioProjects/mynote/lib/presentation/widgets/home/home_app_bar.dart)**: Extracts the complex `SliverAppBar` with Search and View Toggle logic.
+- **[category_selector.dart](file:///U:/StudioProjects/mynote/lib/presentation/widgets/home/category_selector.dart)**: The horizontal list of dynamic category chips.
+- **[notes_view.dart](file:///U:/StudioProjects/mynote/lib/presentation/widgets/home/notes_view.dart)**: Handles the logic for switching between Masonry Grid and List view.
+- **[trash_reminder.dart](file:///U:/StudioProjects/mynote/lib/presentation/widgets/home/trash_reminder.dart)**: The information banner shown only in the Trash view.
 
-### 3. Trash Reminder UI [MODIFY]
-- **[HomePage](file:///U:/StudioProjects/mynote/lib/presentation/pages/home_page.dart)**:
-    - Add a warning banner at the top of the `CustomScrollView` when viewing the Trash (`isShowingTrash == true`).
-    - The banner will state: "Notes in Trash will be permanently deleted after 30 days."
+### 3. Editor Screen Components [NEW]
+- **[attachments_bar.dart](file:///U:/StudioProjects/mynote/lib/presentation/widgets/editor/attachments_bar.dart)**: Displays attached images/files in a clean horizontal strip.
+- **[editor_bottom_panel.dart](file:///U:/StudioProjects/mynote/lib/presentation/widgets/editor/editor_bottom_panel.dart)**: Combines the attachment picker buttons and the circular color picker.
+
+### 4. Page Cleanup [MODIFY]
+- **[HomePage](file:///U:/StudioProjects/mynote/lib/presentation/pages/home_page.dart)**: Will be reduced from 450+ lines to a clean skeleton that coordinates the new widgets.
+- **[NoteEditorPage](file:///U:/StudioProjects/mynote/lib/presentation/pages/note_editor_page.dart)**: Will be streamlined by removing internal build methods and moving them to the `editor/` widget folder.
 
 ## Verification Plan
 
 ### Manual Verification
-1.  **Exit Dialog**:
-    - Open "New Note", type something, then click the back arrow. Verify the dialog appears.
-    - Click "Save" and verify the note is saved.
-    - Click "Discard" and verify the note is NOT saved.
-2.  **Trash Purge**:
-    - Manually set a note's `deletedAt` to 31 days ago in the database (for testing).
-    - Open the app and verify the note is gone from the Trash.
-3.  **UI Banner**:
-    - Go to Trash. Verify the blue/info banner is visible at the top.
+1.  **Regression Testing**: Verify every single button and flow still works:
+    - Create/Edit/Save note.
+    - Search functionality.
+    - Category filtering.
+    - Grid/List toggle.
+    - Biometric lock/unlock.
+    - Trash purge/restore.
+    - PDF Export.
+2.  **UI Consistency**: Ensure the "Ocean Blue" theme and gradients remain pixel-perfect after the move.
