@@ -56,18 +56,15 @@ dependencies:
   pdf: ^3.11.1
   printing: ^5.13.2
   flutter_local_notifications: ^17.2.2
+  record: ^6.2.1
+  audioplayers: ^6.1.0
+  flutter_markdown: ^0.7.3
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
-  flutter_launcher_icons: "^0.14.1"
   flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
-
-flutter_launcher_icons:
-  android: "launcher_icon"
-  ios: false
-  image_path: "assets/Gemini_Generated_Image_91tvsl91tvsl91tv.png"
-  min_sdk_android: 28 # android min sdk min:16, default 21
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -90,7 +87,6 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
       - assets/
-      - assets/sport.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

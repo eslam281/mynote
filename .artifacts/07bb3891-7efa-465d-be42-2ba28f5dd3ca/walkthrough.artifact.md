@@ -1,32 +1,26 @@
-# Walkthrough - Architectural Refactoring
+# Walkthrough - Rich Text Rendering & Bug Fixes
 
-I have successfully refactored the application's architecture, decomposing the massive page files into organized, focused, and maintainable widgets.
+I have resolved the issues with text formatting and fixed the selection-related crashes to ensure a smooth, professional experience.
 
-## 🏗️ Structural Improvements
+## 🌟 Key Improvements
 
-### 📁 Organized Widget System
-- Created a clear directory structure under `lib/presentation/widgets/`:
-    - `home/`: Components specific to the dashboard (AppBar, Category Selector, etc.).
-    - `editor/`: Components for note composition (Attachments Bar, Bottom Panel).
-    - `common/`: Reusable global elements (Confirmation Dialogs, Bottom Sheets).
+### ✍️ Live Rich Text Styling
+- **Live Markdown**: The editor is now "smart". When you type `**bold**` or `*italic*`, the app immediately applies the styling to the text.
+- **Visual Formatting**: Bullet points are now highlighted with the app's primary theme color, making lists stand out.
+- **Consistent Previews**: The main dashboard cards now render Markdown as well, ensuring your bold and italic text looks great everywhere.
 
-### ✂️ Page Decomposition
-- **Home Page**: Reduced complexity by extracting:
-    - [HomeAppBar](file:///U:/StudioProjects/mynote/lib/presentation/widgets/home/home_app_bar.dart)
-    - [CategorySelector](file:///U:/StudioProjects/mynote/lib/presentation/widgets/home/category_selector.dart)
-    - [NotesView](file:///U:/StudioProjects/mynote/lib/presentation/widgets/home/notes_view.dart)
-    - [TrashReminder](file:///U:/StudioProjects/mynote/lib/presentation/widgets/home/trash_reminder.dart)
-- **Note Editor Page**: Streamlined by extracting:
-    - [AttachmentsBar](file:///U:/StudioProjects/mynote/lib/presentation/widgets/editor/attachments_bar.dart)
-    - [EditorBottomPanel](file:///U:/StudioProjects/mynote/lib/presentation/widgets/editor/editor_bottom_panel.dart)
+### 🛡️ Crash Protection (Selection Fix)
+- **Selection Safety**: Fixed the `RangeError` that occurred when clicking formatting buttons (like Bullet or Bold) without focusing on the text area first.
+- **Smart Appending**: If no text is selected, the formatting symbols are now automatically added to the end of your note instead of crashing the app.
 
-### 🧹 Clean Logic Separation
-- All **Confirmation Dialogs** (Exit, Delete All) and **Bottom Sheets** (Options, Info) are now in independent files, making them easier to style and test without touching the main business logic.
+### 🧹 Code Polish
+- **Modern Standards**: Resolved several "BuildContext" and "Share" warnings to align with the latest Flutter best practices.
+- **Adaptive Rendering**: Used `ConstrainedBox` in the note cards to ensure long formatted notes are previewed correctly without breaking the layout.
 
-## 🛠️ Technical Details
-- **Improved Maintainability**: The `HomePage` and `NoteEditorPage` now serve as high-level "controllers" that coordinate small, stateless widgets.
-- **Bug Prevention**: Standardized the use of `mounted` checks across async gaps in UI interactions.
-- **Refined Imports**: Moved to a consistent import pattern to avoid circular dependencies and path resolution errors.
+## 🛠️ Technical Summary
+- **New Service**: Created [MarkdownTextController](file:///U:/StudioProjects/mynote/lib/logic/services/markdown_text_controller.dart) to handle real-time text analysis and styling.
+- **Rendering Engine**: Integrated `flutter_markdown` for high-quality dashboard previews.
+- **Safe State Handling**: Implemented robust `selection.isValid` checks in the editor logic.
 
-> [!NOTE]
-> This refactoring has **zero impact** on the app's features. All functionalities like Biometric Locking, PDF Export, and Trash Purging work exactly as before, but the code is now 100% cleaner and professional.
+> [!TIP]
+> Try typing `**Bold Text**` and `*Italic Text*` in a new note—you'll see the styles change instantly!

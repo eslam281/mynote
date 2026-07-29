@@ -1,7 +1,9 @@
 import 'dart:ui';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../data/models/note_model.dart';
 
@@ -83,16 +85,21 @@ class NoteCard extends StatelessWidget {
                     else ...[
                       if (note.attachments.isNotEmpty)
                         _buildAttachmentsPreview(),
-                      if (note.content.isNotEmpty)
-                        Text(
-                          note.content,
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            color: const Color(0xFF001E30).withValues(alpha: 0.7),
-                            height: 1.6,
+                      if (note.isChecklist)
+                        _buildChecklistPreview()
+                      else if (note.content.isNotEmpty)
+                        ConstrainedBox(
+                          constraints: BoxConstraints(maxHeight: isListMode ? 50 : 120),
+                          child: MarkdownBody(
+                            data: note.content,
+                            styleSheet: MarkdownStyleSheet(
+                              p: GoogleFonts.poppins(
+                                fontSize: 14,
+                                color: const Color(0xFF001E30).withValues(alpha: 0.7),
+                                height: 1.6,
+                              ),
+                            ),
                           ),
-                          maxLines: isListMode ? 2 : 5,
-                          overflow: TextOverflow.ellipsis,
                         ),
                     ],
                     const SizedBox(height: 24),
@@ -134,6 +141,50 @@ class NoteCard extends StatelessWidget {
     );
   }
 
+  Widget _buildChecklistPreview() {
+    try {
+      final List<dynamic> items = jsonDecode(note.content);
+      final previewItems = items.take(3).toList();
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ...previewItems.map((item) => Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Row(
+              children: [
+                Icon(
+                  item['isDone'] ? Icons.check_box_rounded : Icons.check_box_outline_blank_rounded,
+                  size: 14,
+                  color: item['isDone'] ? const Color(0xFF0061A4) : Colors.black38,
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    item['text'],
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      decoration: item['isDone'] ? TextDecoration.lineThrough : null,
+                      color: item['isDone'] ? Colors.black38 : Colors.black87,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          )),
+          if (items.length > 3)
+            Text(
+              '+ ${items.length - 3} more items',
+              style: GoogleFonts.poppins(fontSize: 11, color: Colors.black38),
+            ),
+        ],
+      );
+    } catch (e) {
+      return const SizedBox.shrink();
+    }
+  }
+
   Widget _buildAttachmentsPreview() {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -151,16 +202,26 @@ class NoteCard extends StatelessWidget {
   }
 
   Widget _buildFooter() {
+    final hasAudio = note.attachments.any((a) => a.toLowerCase().endsWith('.m4a') || a.toLowerCase().endsWith('.mp3'));
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          DateFormat('MMM dd, yyyy').format(note.createdAt),
-          style: GoogleFonts.poppins(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-            color: const Color(0xFF001E30).withValues(alpha: 0.4),
-          ),
+        Row(
+          children: [
+            Text(
+              DateFormat('MMM dd, yyyy').format(note.createdAt),
+              style: GoogleFonts.poppins(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF001E30).withValues(alpha: 0.4),
+              ),
+            ),
+            if (hasAudio) ...[
+              const SizedBox(width: 8),
+              Icon(Icons.mic_rounded, size: 12, color: const Color(0xFF001E30).withValues(alpha: 0.4)),
+            ],
+          ],
         ),
         if (note.category != null)
           Container(

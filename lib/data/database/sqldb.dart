@@ -16,11 +16,11 @@ class SqlDb {
     }
   }
 
-  Future<Database> initialDb() async {
+  Future<Database>  initialDb() async {
     var databasePath = await getDatabasesPath();
-    String path = join(databasePath, "notes_v5.db");
+    String path = join(databasePath, "notes_v6.db");
     Database mydb = await openDatabase(path,
-        onCreate: _onCreate, version: 4, onUpgrade: _onUpgrade);
+        onCreate: _onCreate, version: 6, onUpgrade: _onUpgrade);
     return mydb;
   }
 
@@ -45,6 +45,9 @@ class SqlDb {
       await db.execute('ALTER TABLE notes ADD COLUMN isLocked INTEGER NOT NULL DEFAULT 0');
       await db.execute('ALTER TABLE notes ADD COLUMN reminderAt TEXT');
     }
+    if (oldVersion < 6) {
+      await db.execute('ALTER TABLE notes ADD COLUMN isChecklist INTEGER NOT NULL DEFAULT 0');
+    }
   }
 
   Future<void> _onCreate(Database db, int version) async {
@@ -61,6 +64,7 @@ class SqlDb {
         "category" TEXT,
         "attachments" TEXT,
         "isLocked" INTEGER NOT NULL DEFAULT 0,
+        "isChecklist" INTEGER NOT NULL DEFAULT 0,
         "reminderAt" TEXT,
         "createdAt" TEXT NOT NULL
       )

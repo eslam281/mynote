@@ -13,6 +13,7 @@ class NoteModel extends Equatable {
   final String? category;
   final List<String> attachments;
   final bool isLocked;
+  final bool isChecklist;
   final DateTime? reminderAt;
   final DateTime createdAt;
 
@@ -28,6 +29,7 @@ class NoteModel extends Equatable {
     this.category,
     this.attachments = const [],
     this.isLocked = false,
+    this.isChecklist = false,
     this.reminderAt,
     required this.createdAt,
   });
@@ -44,6 +46,7 @@ class NoteModel extends Equatable {
     String? Function()? category,
     List<String>? attachments,
     bool? isLocked,
+    bool? isChecklist,
     DateTime? Function()? reminderAt,
     DateTime? createdAt,
   }) {
@@ -59,6 +62,7 @@ class NoteModel extends Equatable {
       category: category != null ? category() : this.category,
       attachments: attachments ?? this.attachments,
       isLocked: isLocked ?? this.isLocked,
+      isChecklist: isChecklist ?? this.isChecklist,
       reminderAt: reminderAt != null ? reminderAt() : this.reminderAt,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -77,6 +81,7 @@ class NoteModel extends Equatable {
       'category': category,
       'attachments': jsonEncode(attachments),
       'isLocked': isLocked ? 1 : 0,
+      'isChecklist': isChecklist ? 1 : 0,
       'reminderAt': reminderAt?.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
     };
@@ -95,6 +100,7 @@ class NoteModel extends Equatable {
       category: map['category'] as String?,
       attachments: map['attachments'] != null ? List<String>.from(jsonDecode(map['attachments'] as String)) : [],
       isLocked: (map['isLocked'] ?? 0) == 1,
+      isChecklist: (map['isChecklist'] ?? 0) == 1,
       reminderAt: map['reminderAt'] != null ? DateTime.parse(map['reminderAt'] as String) : null,
       createdAt: DateTime.parse(map['createdAt'] as String),
     );
@@ -113,6 +119,7 @@ class NoteModel extends Equatable {
         category,
         attachments,
         isLocked,
+        isChecklist,
         reminderAt,
         createdAt
       ];

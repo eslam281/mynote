@@ -1,20 +1,13 @@
-# Tasks - Architectural Refactoring
+# Tasks - Rich Text Rendering & Crash Fixes
 
-- `[x]` Workspace Setup
-    - `[x]` Create widget directory structure
-- `[x]` Common Components Extraction
-    - `[x]` Create `lib/presentation/widgets/common/confirmation_dialogs.dart`
-    - `[x]` Create `lib/presentation/widgets/common/custom_bottom_sheets.dart`
-- `[x]` Home Screen Refactoring
-    - `[x]` Create `lib/presentation/widgets/home/home_app_bar.dart`
-    - `[x]` Create `lib/presentation/widgets/home/category_selector.dart`
-    - `[x]` Create `lib/presentation/widgets/home/notes_view.dart`
-    - `[x]` Create `lib/presentation/widgets/home/trash_reminder.dart`
-    - `[x]` Clean up `lib/presentation/pages/home_page.dart`
-- `[x]` Editor Screen Refactoring
-    - `[x]` Create `lib/presentation/widgets/editor/attachments_bar.dart`
-    - `[x]` Create `lib/presentation/widgets/editor/editor_bottom_panel.dart`
-    - `[x]` Clean up `lib/presentation/pages/note_editor_page.dart`
+- `[x]` Core Implementation
+    - `[x]` Create `lib/logic/services/markdown_text_controller.dart`
+- `[x]` Editor Safety & Enhancement
+    - `[x]` Update `NoteEditorPage` with `MarkdownTextController`
+    - `[x]` Guard `_formatText` and `_addBullet` against invalid selection
+- `[x]` Dashboard UI Update
+    - `[x]` Update `NoteCard` to use `MarkdownBody` for content preview
 - `[x]` Verification
-    - `[x]` Run app and verify all UI interactions
-    - `[x]` Final code analysis check
+    - `[x]` Verify live styling in editor
+    - `[x]` Verify no crash when clicking buttons with no focus
+    - `[x]` Verify formatted preview on Home screen

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import '../../../logic/services/audio_service.dart';
 
 class AttachmentsBar extends StatelessWidget {
   final List<String> attachments;
@@ -23,9 +24,12 @@ class AttachmentsBar extends StatelessWidget {
         itemCount: attachments.length,
         itemBuilder: (context, index) {
           final path = attachments[index];
-          final isImage = path.toLowerCase().endsWith('.jpg') || 
-                          path.toLowerCase().endsWith('.png') || 
-                          path.toLowerCase().endsWith('.jpeg');
+          final lowerPath = path.toLowerCase();
+          final isImage = lowerPath.endsWith('.jpg') || 
+                          lowerPath.endsWith('.png') || 
+                          lowerPath.endsWith('.jpeg');
+          final isAudio = lowerPath.endsWith('.m4a') || 
+                          lowerPath.endsWith('.mp3');
 
           return Container(
             width: 100,
@@ -40,6 +44,8 @@ class AttachmentsBar extends StatelessWidget {
               children: [
                 if (isImage)
                   Image.file(File(path), fit: BoxFit.cover)
+                else if (isAudio)
+                  _buildAudioTile(path)
                 else
                   const Center(child: Icon(Icons.insert_drive_file_rounded, size: 32, color: Colors.black45)),
                 Positioned(
@@ -58,6 +64,20 @@ class AttachmentsBar extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildAudioTile(String path) {
+    return InkWell(
+      onTap: () => AudioService.playAudio(path),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.audiotrack_rounded, size: 32, color: Color(0xFF0061A4)),
+          const SizedBox(height: 4),
+          const Text('Play Audio', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+        ],
       ),
     );
   }
