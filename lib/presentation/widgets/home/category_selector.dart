@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../logic/l10n/app_localizations.dart';
 import '../../../logic/notes_cubit/notes_state.dart';
 import '../../pages/category_manager_page.dart';
 
@@ -14,11 +15,14 @@ class CategorySelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     if (state.isShowingArchived || state.isShowingTrash) {
       return const SliverToBoxAdapter(child: SizedBox.shrink());
     }
 
-    final categories = ['All', ...state.categories.map((c) => c.name)];
+    final categories = [l10n.translate('all'), ...state.categories.map((c) => c.name)];
 
     return SliverToBoxAdapter(
       child: Container(
@@ -34,36 +38,36 @@ class CategorySelector extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 8),
                 child: ActionChip(
                   avatar: const Icon(Icons.add_rounded, size: 18),
-                  label: const Text('Add'),
+                  label: Text(l10n.translate('add')),
                   onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const CategoryManagerPage()),
                   ),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  backgroundColor: Colors.white,
+                  backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 ),
               );
             }
             final category = categories[index];
-            final isSelected = (state.selectedCategory ?? 'All') == category;
+            final isSelected = (state.selectedCategory ?? l10n.translate('all')) == category;
             return Padding(
               padding: const EdgeInsets.only(right: 8),
               child: ChoiceChip(
                 label: Text(
                   category,
                   style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.black87,
+                    color: isSelected ? Colors.white : (isDark ? Colors.white70 : Colors.black87),
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
                 ),
                 selected: isSelected,
                 onSelected: (selected) {
                   if (selected) {
-                    onCategorySelected(category == 'All' ? null : category);
+                    onCategorySelected(category == l10n.translate('all') ? null : category);
                   }
                 },
                 selectedColor: const Color(0xFF0061A4),
-                backgroundColor: Colors.white,
+                backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 showCheckmark: false,
                 elevation: isSelected ? 4 : 0,

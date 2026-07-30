@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../logic/l10n/app_localizations.dart';
 import '../../../logic/notes_cubit/notes_state.dart';
 
 class HomeAppBar extends StatelessWidget {
@@ -21,11 +22,14 @@ class HomeAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String title = 'My Notes';
+    final l10n = AppLocalizations.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    String title = l10n.translate('home');
     if (state.isShowingTrash) {
-      title = 'Trash';
+      title = l10n.translate('trash');
     } else if (state.isShowingArchived) {
-      title = 'Archive';
+      title = l10n.translate('archive');
     }
 
     return SliverAppBar.large(
@@ -36,9 +40,11 @@ class HomeAppBar extends StatelessWidget {
       ),
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFFF0F4F8), Color(0xFFE0E8F0)],
+              colors: isDark 
+                ? [const Color(0xFF121212), const Color(0xFF1E1E1E)]
+                : [const Color(0xFFF0F4F8), const Color(0xFFE0E8F0)],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),
@@ -57,9 +63,9 @@ class HomeAppBar extends StatelessWidget {
             }
           },
           itemBuilder: (context) => [
-            const PopupMenuItem(
+            PopupMenuItem(
               value: 'delete_all',
-              child: Text('Delete all notes', style: TextStyle(color: Colors.red)),
+              child: Text(l10n.translate('delete_all'), style: const TextStyle(color: Colors.red)),
             ),
           ],
         ),
@@ -70,10 +76,12 @@ class HomeAppBar extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: SearchBar(
             controller: searchController,
-            hintText: 'Search your notes...',
+            hintText: l10n.translate('search_hint'),
             elevation: WidgetStateProperty.all(0),
-            backgroundColor: WidgetStateProperty.all(Colors.black.withValues(alpha: 0.05)),
-            leading: const Icon(Icons.search, color: Colors.black54),
+            backgroundColor: WidgetStateProperty.all(
+              isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.05)
+            ),
+            leading: Icon(Icons.search, color: isDark ? Colors.white54 : Colors.black54),
             trailing: [
               if (searchController.text.isNotEmpty)
                 IconButton(

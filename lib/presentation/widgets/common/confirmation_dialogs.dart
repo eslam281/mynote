@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
+import '../../../logic/l10n/app_localizations.dart';
 
 class ExitConfirmationDialog extends StatelessWidget {
   const ExitConfirmationDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return AlertDialog(
-      title: const Text('Unsaved Changes'),
-      content: const Text('Do you want to save your changes before leaving?'),
+      title: Text(l10n.translate('unsaved_changes')),
+      content: Text(l10n.translate('save_confirm')),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false), // Discard
-          child: const Text('Discard', style: TextStyle(color: Colors.red)),
+          child: Text(l10n.translate('discard'), style: const TextStyle(color: Colors.red)),
         ),
         TextButton(
           onPressed: () => Navigator.pop(context, null), // Cancel (Stay)
-          child: const Text('Stay'),
+          child: Text(l10n.translate('stay')),
         ),
         FilledButton(
           onPressed: () => Navigator.pop(context, true), // Save
-          child: const Text('Save'),
+          child: Text(l10n.translate('save')),
         ),
       ],
     );
@@ -31,17 +34,19 @@ class DeleteAllConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return AlertDialog(
-      title: const Text('Delete all notes?'),
-      content: const Text('This action cannot be undone.'),
+      title: Text(l10n.translate('delete_all')),
+      content: Text(l10n.translate('delete_all_confirm')),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(l10n.translate('cancel')),
         ),
         TextButton(
           onPressed: () => Navigator.pop(context, true),
-          child: const Text('Delete All', style: TextStyle(color: Colors.red)),
+          child: Text(l10n.translate('delete_all'), style: const TextStyle(color: Colors.red)),
         ),
       ],
     );

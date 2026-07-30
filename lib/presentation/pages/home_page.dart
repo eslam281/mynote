@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../logic/l10n/app_localizations.dart';
 import '../../data/models/note_model.dart';
 import '../../logic/notes_cubit/notes_cubit.dart';
 import '../../logic/notes_cubit/notes_state.dart';
@@ -39,6 +40,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       key: _scaffoldKey,
       drawer: const AppDrawer(),
@@ -72,11 +75,11 @@ class _HomePageState extends State<HomePage> {
           );
         },
       ),
-      floatingActionButton: _buildFAB(),
+      floatingActionButton: _buildFAB(l10n),
     );
   }
 
-  Widget _buildFAB() {
+  Widget _buildFAB(AppLocalizations l10n) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
@@ -95,7 +98,7 @@ class _HomePageState extends State<HomePage> {
       ),
       child: FloatingActionButton.extended(
         onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const NoteEditorPage())),
-        label: const Text('New Note', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        label: Text(l10n.translate('new_note'), style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         icon: const Icon(Icons.add, color: Colors.white),
         backgroundColor: Colors.transparent,
         elevation: 0,

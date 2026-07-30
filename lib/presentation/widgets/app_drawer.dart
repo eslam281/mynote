@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../logic/l10n/app_localizations.dart';
 import '../../logic/notes_cubit/notes_cubit.dart';
 import '../../logic/notes_cubit/notes_state.dart';
 import '../pages/category_manager_page.dart';
 import '../pages/about_us_page.dart';
 import '../pages/contact_us_page.dart';
+import '../pages/settings_page.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Drawer(
-      backgroundColor: const Color(0xFFF0F4F8),
+      backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF0F4F8),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadiusDirectional.horizontal(end: Radius.circular(32)),
       ),
@@ -40,7 +45,7 @@ class AppDrawer extends StatelessWidget {
                       const Icon(Icons.note_alt_rounded, color: Colors.white, size: 48),
                       const SizedBox(height: 12),
                       Text(
-                        'MyNote Pro',
+                        l10n.translate('app_title'),
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: 22,
@@ -55,7 +60,7 @@ class AppDrawer extends StatelessWidget {
               _drawerItem(
                 context,
                 icon: Icons.notes_rounded,
-                label: 'All Notes',
+                label: l10n.translate('home'),
                 isSelected: isNotes,
                 onTap: () {
                   context.read<NotesCubit>().loadNotes(showArchived: false, showTrash: false);
@@ -65,7 +70,7 @@ class AppDrawer extends StatelessWidget {
               _drawerItem(
                 context,
                 icon: Icons.archive_outlined,
-                label: 'Archive',
+                label: l10n.translate('archive'),
                 isSelected: isArchived,
                 onTap: () {
                   context.read<NotesCubit>().loadNotes(showArchived: true, showTrash: false);
@@ -75,7 +80,7 @@ class AppDrawer extends StatelessWidget {
               _drawerItem(
                 context,
                 icon: Icons.delete_outline_rounded,
-                label: 'Trash',
+                label: l10n.translate('trash'),
                 isSelected: isTrash,
                 onTap: () {
                   context.read<NotesCubit>().loadNotes(showTrash: true, showArchived: false);
@@ -86,7 +91,7 @@ class AppDrawer extends StatelessWidget {
               _drawerItem(
                 context,
                 icon: Icons.category_outlined,
-                label: 'Manage Categories',
+                label: l10n.translate('manage_categories'),
                 isSelected: false,
                 onTap: () {
                   Navigator.pop(context);
@@ -97,7 +102,7 @@ class AppDrawer extends StatelessWidget {
               _drawerItem(
                 context,
                 icon: Icons.person_outline_rounded,
-                label: 'من أنا',
+                label: l10n.translate('about_me'),
                 isSelected: false,
                 onTap: () {
                   Navigator.pop(context);
@@ -107,11 +112,21 @@ class AppDrawer extends StatelessWidget {
               _drawerItem(
                 context,
                 icon: Icons.alternate_email_rounded,
-                label: 'تواصل معنا',
+                label: l10n.translate('contact_us'),
                 isSelected: false,
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const ContactUsPage()));
+                },
+              ),
+              _drawerItem(
+                context,
+                icon: Icons.settings_outlined,
+                label: l10n.translate('settings'),
+                isSelected: false,
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
                 },
               ),
               const Spacer(),
@@ -119,7 +134,10 @@ class AppDrawer extends StatelessWidget {
                 padding: const EdgeInsets.all(24.0),
                 child: Text(
                   'v1.2.0 - 100% Local Privacy',
-                  style: TextStyle(color: Colors.black.withValues(alpha: 0.4), fontSize: 12),
+                  style: TextStyle(
+                    color: isDark ? Colors.white38 : Colors.black38,
+                    fontSize: 12,
+                  ),
                 ),
               ),
             ],

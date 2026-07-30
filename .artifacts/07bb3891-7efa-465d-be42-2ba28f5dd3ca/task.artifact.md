@@ -1,11 +1,18 @@
-# Tasks - Info & Contact Pages Migration
+# Tasks - Localization & Dark Mode Fix
 
-- `[x]` Project Configuration
-    - `[x]` Add `url_launcher` to `pubspec.yaml`
-- `[x]` Page Implementation
-    - `[x]` Create `lib/presentation/pages/about_us_page.dart`
-    - `[x]` Create `lib/presentation/pages/contact_us_page.dart`
-- `[x]` Navigation Integration
-    - `[x]` Update `AppDrawer` with new menu items
-- `[x]` Verification
-    - `[x]` Test navigation and external links
+- `[/]` Core Localization
+    - `[ ]` Create `lib/logic/l10n/app_localizations.dart`
+    - `[ ]` Define English strings
+    - `[ ]` Define Arabic strings
+- `[ ]` Global Theme Polish
+    - `[ ]` Fix `darkTheme` in `main.dart` (AppBar & Backgrounds)
+    - `[ ]` Make `SliverAppBar` gradients theme-aware
+- `[ ]` UI Translation
+    - `[ ]` Update `AppDrawer`
+    - `[ ]` Update `HomePage` & `HomeAppBar`
+    - `[ ]` Update `NoteEditorPage` & Dialogs
+    - `[ ]` Update `SettingsPage`
+    - `[ ]` Update `CategoryManagerPage`, `AboutUsPage`, `ContactUsPage`
+- `[ ]` Verification
+    - `[ ]` Toggle language and verify all text changes
+    - `[ ]` Toggle Dark Mode and verify visibility in all screens

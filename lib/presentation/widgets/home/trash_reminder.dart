@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../logic/l10n/app_localizations.dart';
 
 class TrashReminder extends StatelessWidget {
   const TrashReminder({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    
     return SliverToBoxAdapter(
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -21,7 +24,7 @@ class TrashReminder extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                'Notes in Trash will be permanently deleted after 30 days.',
+                l10n.translate('trash_purge_msg'),
                 style: GoogleFonts.poppins(
                   fontSize: 13,
                   color: Colors.blue.shade800,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../logic/l10n/app_localizations.dart';
 import '../../logic/notes_cubit/notes_cubit.dart';
 import '../../logic/notes_cubit/notes_state.dart';
 
@@ -38,9 +39,11 @@ class _CategoryManagerPageState extends State<CategoryManagerPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Manage Categories'),
+        title: Text(l10n.translate('manage_categories')),
       ),
       body: BlocBuilder<NotesCubit, NotesState>(
         builder: (context, state) {
@@ -55,8 +58,9 @@ class _CategoryManagerPageState extends State<CategoryManagerPage> {
                   children: [
                     TextField(
                       controller: _categoryController,
+                      textAlign: TextAlign.start,
                       decoration: InputDecoration(
-                        hintText: 'New category name...',
+                        hintText: l10n.translate('new_cat_hint'),
                         suffixIcon: IconButton(
                           icon: const Icon(Icons.add_circle, color: Color(0xFF0061A4), size: 32),
                           onPressed: _addCategory,
@@ -65,31 +69,7 @@ class _CategoryManagerPageState extends State<CategoryManagerPage> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    SizedBox(
-                      height: 40,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: _colors.length,
-                        itemBuilder: (context, index) {
-                          final color = _colors[index];
-                          return GestureDetector(
-                            onTap: () => setState(() => _selectedColor = color),
-                            child: Container(
-                              width: 30,
-                              margin: const EdgeInsets.only(right: 12),
-                              decoration: BoxDecoration(
-                                color: Color(color),
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: _selectedColor == color ? Colors.black87 : Colors.transparent,
-                                  width: 2,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                    _buildColorPicker(l10n),
                   ],
                 ),
               ),
@@ -114,6 +94,41 @@ class _CategoryManagerPageState extends State<CategoryManagerPage> {
           );
         },
       ),
+    );
+  }
+
+  Widget _buildColorPicker(AppLocalizations l10n) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l10n.translate('bg_color'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 40,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: _colors.length,
+            itemBuilder: (context, index) {
+              final color = _colors[index];
+              return GestureDetector(
+                onTap: () => setState(() => _selectedColor = color),
+                child: Container(
+                  width: 30,
+                  margin: const EdgeInsets.only(right: 12),
+                  decoration: BoxDecoration(
+                    color: Color(color),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: _selectedColor == color ? Colors.black87 : Colors.transparent,
+                      width: 2,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,34 +1,33 @@
-# Implementation Plan - Info & Contact Pages Migration
+# Implementation Plan - Full Localization & Dark Mode Fix
 
-This plan migrates and modernizes the "About Me" and "Contact Us" pages from your previous project into MyNote Pro, adapting them to our current professional "Ocean Blue" design system.
+This plan fixes the invisible AppBar in Dark Mode and implements actual text translations for the entire app.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> - **Design Adaptation**: The pages will be completely redesigned using `SliverAppBar.large` and Bento-style cards to match the app's current aesthetic.
-> - **Language**: The content will remain in Arabic as per your previous design, which fits perfectly with our new RTL support.
+> - **Full Translation**: I will implement a system that translates **all** buttons, titles, and labels when you switch to Arabic.
+> - **Dark Mode Polish**: I will explicitly set Dark Mode colors for the AppBar to ensure it is always visible and consistent.
 
 ## Proposed Changes
 
-### 1. Dependencies [MODIFY]
-- **[pubspec.yaml](file:///U:/StudioProjects/mynote/pubspec.yaml)**: Add `url_launcher` for external links (GitHub, LinkedIn, Email).
+### 1. Localization System [NEW]
+- **[AppLocalizations](file:///U:/StudioProjects/mynote/lib/logic/l10n/app_localizations.dart)**:
+    - Create a custom delegate and a class that stores all app strings in both Arabic and English.
+    - Example keys: `homeTitle`, `settings`, `delete`, `save`, `trash`, etc.
 
-### 2. New Pages [NEW]
-- **[AboutUsPage](file:///U:/StudioProjects/mynote/lib/presentation/pages/about_us_page.dart)**:
-    - Displays your profile, technical skills, and projects.
-    - Uses a clean, card-based layout with the app's primary gradient.
-- **[ContactUsPage](file:///U:/StudioProjects/mynote/lib/presentation/pages/contact_us_page.dart)**:
-    - Lists contact methods (Email, GitHub, LinkedIn, Google Play).
-    - Features interactive "Contact Cards" that launch external apps.
+### 2. Theme Correction [MODIFY]
+- **[main.dart](file:///U:/StudioProjects/mynote/lib/main.dart)**:
+    - Update `darkTheme` to include a full `AppBarTheme` with a dark surface color and white text.
+    - Standardize `SliverAppBar` background colors to adapt correctly to Dark Mode.
 
-### 3. Navigation Update [MODIFY]
-- **[AppDrawer](file:///U:/StudioProjects/mynote/lib/presentation/widgets/app_drawer.dart)**:
-    - Add links to "من أنا" (About Me) and "تواصل معنا" (Contact Us) at the bottom of the menu.
+### 3. UI Translation [MODIFY]
+- **All Pages**: Update every screen to use `AppLocalizations.of(context).translate('key')` instead of hardcoded Arabic or English text.
+    - Screens involved: Home, Editor, Settings, Drawer, Category Manager, About, Contact.
 
 ## Verification Plan
 
 ### Manual Verification
-1.  **Drawer Check**: Verify the new items appear in the side menu.
-2.  **Visual Check**: Ensure the colors, fonts (Poppins), and card styles match the rest of the app.
-3.  **Link Check**: Click on the GitHub and Email cards to verify they correctly open the respective apps/sites.
-4.  **RTL Check**: Verify the pages align correctly from right-to-left when the system language is Arabic.
+1.  **Dark Mode Visibility**: Turn on Dark Mode and go to Settings. Verify the AppBar is clearly visible with a dark background and readable title.
+2.  **Language Check (Arabic)**: Switch language to Arabic. Verify that "Settings" changes to "الإعدادات", "Trash" changes to "سلة المهملات", etc.
+3.  **Language Check (English)**: Switch back to English and verify all strings revert correctly.
+4.  **Consistency**: Ensure the "All" category bug and RTL alignment fixes remain intact.

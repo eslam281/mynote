@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../../../logic/l10n/app_localizations.dart';
 import '../../../data/models/note_model.dart';
 import '../../../logic/notes_cubit/notes_state.dart';
 import '../note_card.dart';
@@ -19,6 +20,7 @@ class NotesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     var notes = state.notes;
     if (state.selectedCategory != null) {
       notes = notes.where((n) => n.category == state.selectedCategory).toList();
@@ -35,7 +37,7 @@ class NotesView extends StatelessWidget {
                 .shake(hz: 2, curve: Curves.easeInOut),
             const SizedBox(height: 16),
             Text(
-              'No notes found',
+              l10n.translate('no_notes_found'),
               style: TextStyle(fontSize: 18, color: Colors.grey.shade500, fontWeight: FontWeight.w500),
             ),
           ],

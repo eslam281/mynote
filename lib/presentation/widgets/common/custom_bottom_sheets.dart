@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import '../../../logic/l10n/app_localizations.dart';
 import '../../../data/models/note_model.dart';
 
 class NoteOptionsSheet extends StatelessWidget {
+// ... same fields ...
   final NoteModel note;
   final Function(NoteModel) onTogglePin;
   final Function(NoteModel) onToggleArchive;
@@ -25,6 +27,8 @@ class NoteOptionsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return SafeArea(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -33,7 +37,7 @@ class NoteOptionsSheet extends StatelessWidget {
           if (!note.isDeleted) ...[
             ListTile(
               leading: Icon(note.isPinned ? Icons.push_pin : Icons.push_pin_outlined),
-              title: Text(note.isPinned ? 'Unpin' : 'Pin'),
+              title: Text(note.isPinned ? l10n.translate('unpin') : l10n.translate('pin')),
               onTap: () {
                 onTogglePin(note);
                 Navigator.pop(context);
@@ -41,7 +45,7 @@ class NoteOptionsSheet extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.copy_outlined),
-              title: const Text('Duplicate'),
+              title: Text(l10n.translate('duplicate')),
               onTap: () {
                 onDuplicate(note);
                 Navigator.pop(context);
@@ -49,7 +53,7 @@ class NoteOptionsSheet extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(note.isArchived ? Icons.unarchive_outlined : Icons.archive_outlined),
-              title: Text(note.isArchived ? 'Unarchive' : 'Archive'),
+              title: Text(note.isArchived ? l10n.translate('unarchive') : l10n.translate('archive')),
               onTap: () {
                 onToggleArchive(note);
                 Navigator.pop(context);
@@ -57,7 +61,7 @@ class NoteOptionsSheet extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.delete_outline, color: Colors.orange),
-              title: const Text('Move to Trash', style: TextStyle(color: Colors.orange)),
+              title: Text(l10n.translate('move_to_trash'), style: const TextStyle(color: Colors.orange)),
               onTap: () {
                 onSoftDelete(note);
                 Navigator.pop(context);
@@ -66,7 +70,7 @@ class NoteOptionsSheet extends StatelessWidget {
           ] else ...[
             ListTile(
               leading: const Icon(Icons.restore_outlined),
-              title: const Text('Restore Note'),
+              title: Text(l10n.translate('restore')),
               onTap: () {
                 onRestore(note);
                 Navigator.pop(context);
@@ -74,7 +78,7 @@ class NoteOptionsSheet extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.delete_forever_outlined, color: Colors.red),
-              title: const Text('Delete Permanently', style: TextStyle(color: Colors.red)),
+              title: Text(l10n.translate('delete_permanent'), style: const TextStyle(color: Colors.red)),
               onTap: () {
                 onDeletePermanently(note.id!);
                 Navigator.pop(context);
@@ -96,6 +100,7 @@ class NoteInfoSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final words = content.trim().isEmpty ? 0 : content.trim().split(RegExp(r'\s+')).length;
     final chars = content.length;
 
@@ -105,11 +110,11 @@ class NoteInfoSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Note Info', style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold)),
+          Text(l10n.translate('note_info'), style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold)),
           const SizedBox(height: 20),
-          _infoRow(Icons.text_fields, 'Characters', chars.toString()),
-          _infoRow(Icons.short_text, 'Words', words.toString()),
-          _infoRow(Icons.calendar_today, 'Created', DateFormat('MMM dd, yyyy HH:mm').format(note?.createdAt ?? DateTime.now())),
+          _infoRow(Icons.text_fields, l10n.translate('characters'), chars.toString()),
+          _infoRow(Icons.short_text, l10n.translate('words'), words.toString()),
+          _infoRow(Icons.calendar_today, l10n.translate('created'), DateFormat('MMM dd, yyyy HH:mm').format(note?.createdAt ?? DateTime.now())),
           const SizedBox(height: 16),
         ],
       ),

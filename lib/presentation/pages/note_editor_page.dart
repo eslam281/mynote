@@ -11,8 +11,9 @@ import '../../logic/notes_cubit/notes_cubit.dart';
 import '../../logic/notes_cubit/notes_state.dart';
 import '../../logic/services/file_service.dart';
 import 'package:mynote/logic/services/audio_service.dart';
-import 'package:mynote/logic/services/markdown_text_controller.dart';
+import '../../logic/services/markdown_text_controller.dart';
 import '../../logic/services/pdf_service.dart';
+import '../../logic/l10n/app_localizations.dart';
 import '../widgets/editor/formatting_toolbar.dart';
 import '../widgets/editor/attachments_bar.dart';
 import '../widgets/editor/editor_bottom_panel.dart';
@@ -210,7 +211,6 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
               selectedText.length +
               suffix.length);
     } else {
-      // If no selection or cursor, append to the end
       final newText = '$text$prefix$suffix';
       _contentController.text = newText;
       _contentController.selection = TextSelection.collapsed(offset: newText.length - suffix.length);
@@ -303,6 +303,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
   }
 
   PreferredSizeWidget _buildAppBar() {
+    final l10n = AppLocalizations.of(context);
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -320,12 +321,12 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
             isChecklist: _isChecklist,
             createdAt: widget.note?.createdAt ?? DateTime.now(),
           )),
-          tooltip: 'Export to PDF',
+          tooltip: l10n.translate('export_pdf'),
         ),
         IconButton(
           icon: Icon(_isLocked ? Icons.lock_rounded : Icons.lock_open_rounded),
           onPressed: () => setState(() => _isLocked = !_isLocked),
-          tooltip: 'Lock Note',
+          tooltip: l10n.translate('lock_note'),
         ),
         IconButton(
           icon: const Icon(Icons.info_outline),
@@ -340,9 +341,8 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
         IconButton(
           icon: const Icon(Icons.share_outlined),
           onPressed: () {
-            sp.SharePlus.instance.share(
-                sp.ShareParams(text:"${_titleController.text}\n\n${_contentController.text}"
-                ));
+            sp.Share.share(
+                "${_titleController.text}\n\n${_contentController.text}");
           },
         ),
         IconButton(
@@ -359,33 +359,38 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
   }
 
   Widget _buildTitleField() {
+    final l10n = AppLocalizations.of(context);
     return TextField(
       controller: _titleController,
+      textAlign: TextAlign.start,
       style: GoogleFonts.poppins(
           fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87),
-      decoration: const InputDecoration(
-        hintText: 'Title',
+      decoration: InputDecoration(
+        hintText: l10n.translate('title_hint'),
         border: InputBorder.none,
-        hintStyle: TextStyle(color: Colors.black38),
+        hintStyle: const TextStyle(color: Colors.black38),
       ),
     );
   }
 
   Widget _buildContentField() {
+    final l10n = AppLocalizations.of(context);
     return TextField(
       controller: _contentController,
+      textAlign: TextAlign.start,
       style: GoogleFonts.poppins(
           fontSize: 18, color: Colors.black87, height: 1.6),
       maxLines: null,
-      decoration: const InputDecoration(
-        hintText: 'Start typing...',
+      decoration: InputDecoration(
+        hintText: l10n.translate('content_hint'),
         border: InputBorder.none,
-        hintStyle: TextStyle(color: Colors.black38),
+        hintStyle: const TextStyle(color: Colors.black38),
       ),
     );
   }
 
   Widget _buildChecklistEditor() {
+    final l10n = AppLocalizations.of(context);
     return Column(
       children: [
         ..._checklistItems.asMap().entries.map((entry) {
@@ -404,6 +409,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
                     ..selection = TextSelection.fromPosition(
                         TextPosition(offset: item.text.length)),
                   onChanged: (val) => item.text = val,
+                  textAlign: TextAlign.start,
                   style: GoogleFonts.poppins(
                     fontSize: 18,
                     decoration: item.isDone ? TextDecoration.lineThrough : null,
@@ -427,7 +433,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
           onPressed: () =>
               setState(() => _checklistItems.add(_ChecklistItem(text: ''))),
           icon: const Icon(Icons.add),
-          label: const Text('Add Item'),
+          label: Text(l10n.translate('add_item')),
         ),
       ],
     );
