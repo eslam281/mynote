@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../logic/notes_cubit/notes_cubit.dart';
 import '../../logic/notes_cubit/notes_state.dart';
 import '../pages/category_manager_page.dart';
+import '../pages/about_us_page.dart';
+import '../pages/contact_us_page.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -89,6 +91,27 @@ class AppDrawer extends StatelessWidget {
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const CategoryManagerPage()));
+                },
+              ),
+              const Divider(indent: 20, endIndent: 20, height: 40),
+              _drawerItem(
+                context,
+                icon: Icons.person_outline_rounded,
+                label: 'من أنا',
+                isSelected: false,
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AboutUsPage()));
+                },
+              ),
+              _drawerItem(
+                context,
+                icon: Icons.alternate_email_rounded,
+                label: 'تواصل معنا',
+                isSelected: false,
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const ContactUsPage()));
                 },
               ),
               const Spacer(),

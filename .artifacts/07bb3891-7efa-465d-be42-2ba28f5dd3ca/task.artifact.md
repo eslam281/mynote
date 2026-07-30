@@ -1,13 +1,11 @@
-# Tasks - Rich Text Rendering & Crash Fixes
+# Tasks - Info & Contact Pages Migration
 
-- `[x]` Core Implementation
-    - `[x]` Create `lib/logic/services/markdown_text_controller.dart`
-- `[x]` Editor Safety & Enhancement
-    - `[x]` Update `NoteEditorPage` with `MarkdownTextController`
-    - `[x]` Guard `_formatText` and `_addBullet` against invalid selection
-- `[x]` Dashboard UI Update
-    - `[x]` Update `NoteCard` to use `MarkdownBody` for content preview
+- `[x]` Project Configuration
+    - `[x]` Add `url_launcher` to `pubspec.yaml`
+- `[x]` Page Implementation
+    - `[x]` Create `lib/presentation/pages/about_us_page.dart`
+    - `[x]` Create `lib/presentation/pages/contact_us_page.dart`
+- `[x]` Navigation Integration
+    - `[x]` Update `AppDrawer` with new menu items
 - `[x]` Verification
-    - `[x]` Verify live styling in editor
-    - `[x]` Verify no crash when clicking buttons with no focus
-    - `[x]` Verify formatted preview on Home screen
+    - `[x]` Test navigation and external links

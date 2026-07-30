@@ -55,6 +55,7 @@ dependencies:
   local_auth_darwin: ^1.1.0
   pdf: ^3.11.1
   printing: ^5.13.2
+  url_launcher: ^6.3.0
   flutter_local_notifications: ^17.2.2
   record: ^6.2.1
   audioplayers: ^6.1.0

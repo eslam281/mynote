@@ -1,35 +1,34 @@
-# Implementation Plan - Rich Text Rendering & Bug Fixes
+# Implementation Plan - Info & Contact Pages Migration
 
-This plan fixes the formatting symbols issue by implementing live Markdown rendering in the editor and resolves the selection-related crashes.
+This plan migrates and modernizes the "About Me" and "Contact Us" pages from your previous project into MyNote Pro, adapting them to our current professional "Ocean Blue" design system.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> - **Live Styling**: The editor will now **actually show** Bold and Italic text while you type. The symbols (like `**`) will remain visible but will be styled alongside the text for a professional "Markdown" feel.
-> - **Crash Fix**: I've identified the cause of the `RangeError` (it happens when you click formatting buttons without selecting the text area first) and will add safety guards.
+> - **Design Adaptation**: The pages will be completely redesigned using `SliverAppBar.large` and Bento-style cards to match the app's current aesthetic.
+> - **Language**: The content will remain in Arabic as per your previous design, which fits perfectly with our new RTL support.
 
 ## Proposed Changes
 
-### 1. Rich Text Controller [NEW]
-- **[MarkdownTextController](file:///U:/StudioProjects/mynote/lib/logic/services/markdown_text_controller.dart)**:
-    - A custom `TextEditingController` that overrides `buildTextSpan`.
-    - Uses Regular Expressions to detect `**bold**`, `*italic*`, and `• bullets`.
-    - Applies `FontWeight.bold` and `FontStyle.italic` dynamically to the text.
+### 1. Dependencies [MODIFY]
+- **[pubspec.yaml](file:///U:/StudioProjects/mynote/pubspec.yaml)**: Add `url_launcher` for external links (GitHub, LinkedIn, Email).
 
-### 2. Bug Fixes [MODIFY]
-- **[NoteEditorPage](file:///U:/StudioProjects/mynote/lib/presentation/pages/note_editor_page.dart)**:
-    - Update `_addBullet` and `_formatText` to check if `selection.baseOffset >= 0`.
-    - If no selection exists, append the formatting to the end of the text instead of crashing.
-    - Switch `_contentController` to use the new `MarkdownTextController`.
+### 2. New Pages [NEW]
+- **[AboutUsPage](file:///U:/StudioProjects/mynote/lib/presentation/pages/about_us_page.dart)**:
+    - Displays your profile, technical skills, and projects.
+    - Uses a clean, card-based layout with the app's primary gradient.
+- **[ContactUsPage](file:///U:/StudioProjects/mynote/lib/presentation/pages/contact_us_page.dart)**:
+    - Lists contact methods (Email, GitHub, LinkedIn, Google Play).
+    - Features interactive "Contact Cards" that launch external apps.
 
-### 3. Dashboard Rendering [MODIFY]
-- **[NoteCard](file:///U:/StudioProjects/mynote/lib/presentation/widgets/note_card.dart)**:
-    - Use `MarkdownBody` from the `flutter_markdown` package to render the note preview.
-    - This ensures that `**text**` appears as **Bold** on the home screen too.
+### 3. Navigation Update [MODIFY]
+- **[AppDrawer](file:///U:/StudioProjects/mynote/lib/presentation/widgets/app_drawer.dart)**:
+    - Add links to "من أنا" (About Me) and "تواصل معنا" (Contact Us) at the bottom of the menu.
 
 ## Verification Plan
 
 ### Manual Verification
-1.  **Formatting Test**: Type `**Hello**`. Verify the word "Hello" appears bold in the editor.
-2.  **Crash Test**: Open a new note and immediately click the "Bullet" button *without* clicking the title or content first. Verify the app no longer crashes.
-3.  **Preview Test**: Save a note with bold text. Go to the home screen and verify the card shows the text as bold.
+1.  **Drawer Check**: Verify the new items appear in the side menu.
+2.  **Visual Check**: Ensure the colors, fonts (Poppins), and card styles match the rest of the app.
+3.  **Link Check**: Click on the GitHub and Email cards to verify they correctly open the respective apps/sites.
+4.  **RTL Check**: Verify the pages align correctly from right-to-left when the system language is Arabic.
