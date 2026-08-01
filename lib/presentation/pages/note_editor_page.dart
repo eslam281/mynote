@@ -202,28 +202,56 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
     }
   }
 
-  void _formatText(String prefix, String suffix) {
+  void _formatText(String marker) {
     final text = _contentController.text;
     final selection = _contentController.selection;
+    if (!selection.isValid) return;
 
-    if (selection.isValid && selection.baseOffset >= 0) {
-      final selectedText = text.substring(selection.start, selection.end);
-      final newText = text.replaceRange(
-          selection.start, selection.end, '$prefix$selectedText$suffix');
-      _contentController.text = newText;
-      _contentController.selection = TextSelection.collapsed(
-          offset: selection.start +
-              prefix.length +
-              selectedText.length +
-              suffix.length);
-    } else {
-      final newText = '$text$prefix$suffix';
-      _contentController.text = newText;
-      _contentController.selection = TextSelection.collapsed(offset: newText.length - suffix.length);
+    final start = selection.start;
+    final end = selection.end;
+    final selectedText = text.substring(start, end);
+
+    // Check if selection is already wrapped
+    final bool isWrapped = selectedText.startsWith(marker) && selectedText.endsWith(marker);
+
+    // Check if selection is INSIDE markers (e.g. cursor at |word| in **|word|**)
+    bool isInside = false;
+    if (!isWrapped && start >= marker.length && end <= text.length - marker.length) {
+      final before = text.substring(start - marker.length, start);
+      final after = text.substring(end, end + marker.length);
+      if (before == marker && after == marker) {
+        isInside = true;
+      }
     }
+
+    String newText;
+    int newStart, newEnd;
+
+    if (isWrapped) {
+      final innerText = selectedText.substring(marker.length, selectedText.length - marker.length);
+      newText = text.replaceRange(start, end, innerText);
+      newStart = start;
+      newEnd = start + innerText.length;
+    } else if (isInside) {
+      newText = text.replaceRange(end, end + marker.length, '');
+      newText = newText.replaceRange(start - marker.length, start, '');
+      newStart = start - marker.length;
+      newEnd = end - marker.length;
+    } else {
+      newText = text.replaceRange(start, end, '$marker$selectedText$marker');
+      newStart = start;
+      newEnd = end + (marker.length * 2);
+    }
+
+    _contentController.text = newText;
+    _contentController.selection = TextSelection(
+      baseOffset: newStart,
+      extentOffset: newEnd,
+    );
   }
 
   void _addBullet() {
+// ...
     final text = _contentController.text;
     final selection = _contentController.selection;
     
@@ -287,8 +315,8 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
               ),
             ),
             FormattingToolbar(
-              onBold: () => _formatText('**', '**'),
-              onItalic: () => _formatText('*', '*'),
+              onBold: () => _formatText('**'),
+              onItalic: () => _formatText('*'),
               onBullet: _addBullet,
               onChecklist: _toggleChecklist,
               onMic: _handleMic,
@@ -468,28 +496,28 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
           runSpacing: 10,
           children: state.categories.map((cat) {
             final isSelected = _selectedCategory == cat.name;
-            return ChoiceChip(
+            return RawChip(
               label: Text(cat.name),
               selected: isSelected,
               onSelected: (selected) =>
                   setState(() => _selectedCategory = selected ? cat.name : null),
               selectedColor: const Color(0xFF0061A4),
-              backgroundColor: contentColor.withValues(alpha: 0.05),
+              backgroundColor: Colors.transparent,
               labelStyle: TextStyle(
-                color: isSelected ? Colors.white : contentColor.withValues(alpha: 0.8),
+                color: isSelected ? Colors.white : Colors.white,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                 fontSize: 14,
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               side: BorderSide(
-                color: isSelected ? const Color(0xFF001E30) : contentColor.withValues(alpha: 0.1),
-                width: isSelected ? 2.5 : 1,
+                color: isSelected ? const Color(0xFF001E30) : contentColor.withValues(alpha: 0.2),
+                width: isSelected ? 2 : 1,
               ),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               showCheckmark: isSelected,
               checkmarkColor: Colors.white,
-              elevation: isSelected ? 4 : 0,
-              pressElevation: 8,
+              elevation: isSelected ? 2 : 0,
+              pressElevation: 4,
             );
           }).toList(),
         );
