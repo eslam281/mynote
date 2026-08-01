@@ -90,12 +90,17 @@ class MyApp extends StatelessWidget {
                 seedColor: const Color(0xFF1875DE),
                 brightness: Brightness.dark,
                 surface: const Color(0xFF121212),
+                onSurface: Colors.white,
               ),
-              textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).primaryTextTheme),
+              textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).primaryTextTheme).apply(
+                bodyColor: Colors.white,
+                displayColor: Colors.white,
+              ),
               appBarTheme: AppBarTheme(
                 centerTitle: false,
                 elevation: 0,
                 backgroundColor: const Color(0xFF121212),
+                foregroundColor: Colors.white,
                 titleTextStyle: GoogleFonts.poppins(
                   color: Colors.white,
                   fontSize: 24,

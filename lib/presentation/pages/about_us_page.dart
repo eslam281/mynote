@@ -18,17 +18,17 @@ class AboutUsPage extends StatelessWidget {
             padding: const EdgeInsets.all(20.0),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                _buildProfileHeader(isDark),
+                _buildProfileHeader(l10n, isDark),
                 const SizedBox(height: 30),
                 _buildSection(
                   context,
                   title: l10n.translate('technical_skills'),
                   icon: Icons.code_rounded,
                   items: [
-                    'حل المشكلات، هياكل البيانات والخوارزميات',
-                    'مبادئ OOP وهندسة البرمجيات الحديثة',
-                    'قواعد البيانات العلائقية (MySQL)',
-                    'إتقان Flutter, Dart, REST API, Git'
+                    l10n.translate('skill_1'),
+                    l10n.translate('skill_2'),
+                    l10n.translate('skill_3'),
+                    l10n.translate('skill_4'),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -37,10 +37,10 @@ class AboutUsPage extends StatelessWidget {
                   title: l10n.translate('key_projects'),
                   icon: Icons.rocket_launch_rounded,
                   items: [
-                    'نظام متجر إلكتروني متكامل (3 تطبيقات)',
-                    'واجهة مستخدم متجاوبة باستخدام GetX',
-                    'باك إند متطور باستخدام PHP و MySQL',
-                    'أنظمة تتبع ودفع إلكتروني ذكية'
+                    l10n.translate('proj_1'),
+                    l10n.translate('proj_2'),
+                    l10n.translate('proj_3'),
+                    l10n.translate('proj_4'),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -49,15 +49,15 @@ class AboutUsPage extends StatelessWidget {
                   title: l10n.translate('personal_skills'),
                   icon: Icons.psychology_rounded,
                   items: [
-                    'حب مشاركة المعرفة والتطوع التقني',
-                    'القدرة على العمل الجماعي وقيادة الفرق',
-                    'احترام أخلاقيات العمل والاحترافية',
-                    'البحث السريع وإيجاد حلول إبداعية'
+                    l10n.translate('pers_1'),
+                    l10n.translate('pers_2'),
+                    l10n.translate('pers_3'),
+                    l10n.translate('pers_4'),
                   ],
                 ),
                 const SizedBox(height: 40),
                 Text(
-                  "\"البرمجة ليست مجرد كود، بل هي فن حل المشكلات\"",
+                  l10n.translate('quote'),
                   style: GoogleFonts.poppins(
                     fontStyle: FontStyle.italic,
                     color: isDark ? Colors.white38 : Colors.black38,
@@ -93,7 +93,7 @@ class AboutUsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeader(bool isDark) {
+  Widget _buildProfileHeader(AppLocalizations l10n, bool isDark) {
     return Column(
       children: [
         Container(
@@ -112,7 +112,7 @@ class AboutUsPage extends StatelessWidget {
         ),
         const SizedBox(height: 15),
         Text(
-          'إسلام سيد عبد العزيز',
+          l10n.translate('dev_name'),
           style: GoogleFonts.poppins(
             fontSize: 26,
             color: isDark ? Colors.white : const Color(0xFF001E30),
@@ -122,12 +122,12 @@ class AboutUsPage extends StatelessWidget {
         ),
         const SizedBox(height: 5),
         Text(
-          'مطور تطبيقات موبايل (Flutter)',
+          l10n.translate('dev_role'),
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: isDark ? Colors.white70 : Colors.black54),
           textAlign: TextAlign.center,
         ),
         Text(
-          'كلية الحاسبات والمعلومات - أكاديمية طيبة',
+          l10n.translate('dev_edu'),
           style: TextStyle(fontSize: 14, color: isDark ? Colors.white38 : Colors.black45),
           textAlign: TextAlign.center,
         ),

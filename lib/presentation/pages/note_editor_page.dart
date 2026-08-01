@@ -111,6 +111,12 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
         _attachments.length != widget.note!.attachments.length;
   }
 
+  Color get _contentColor {
+    return ThemeData.estimateBrightnessForColor(Color(_selectedColor)) == Brightness.light
+        ? const Color(0xFF001E30)
+        : Colors.white;
+  }
+
   void _saveNote() {
     final title = _titleController.text.trim();
     final content = _isChecklist
@@ -295,6 +301,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
               onColorSelected: (color) => setState(() => _selectedColor = color),
               onPickImage: _pickImage,
               onPickFile: _pickFile,
+              contentColor: _contentColor,
             ),
           ],
         ),
@@ -304,12 +311,16 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
 
   PreferredSizeWidget _buildAppBar() {
     final l10n = AppLocalizations.of(context);
+    final contentColor = _contentColor;
+    
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
+      iconTheme: IconThemeData(color: contentColor),
       actions: [
         IconButton(
           icon: const Icon(Icons.picture_as_pdf_outlined),
+          color: contentColor,
           onPressed: () => PdfService.exportNote(NoteModel(
             title: _titleController.text,
             content: _isChecklist
@@ -325,11 +336,13 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
         ),
         IconButton(
           icon: Icon(_isLocked ? Icons.lock_rounded : Icons.lock_open_rounded),
+          color: contentColor,
           onPressed: () => setState(() => _isLocked = !_isLocked),
           tooltip: l10n.translate('lock_note'),
         ),
         IconButton(
           icon: const Icon(Icons.info_outline),
+          color: contentColor,
           onPressed: () => showModalBottomSheet(
             context: context,
             shape: const RoundedRectangleBorder(
@@ -340,6 +353,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
         ),
         IconButton(
           icon: const Icon(Icons.share_outlined),
+          color: contentColor,
           onPressed: () {
             sp.Share.share(
                 "${_titleController.text}\n\n${_contentController.text}");
@@ -347,10 +361,12 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
         ),
         IconButton(
           icon: Icon(_isPinned ? Icons.push_pin : Icons.push_pin_outlined),
+          color: contentColor,
           onPressed: () => setState(() => _isPinned = !_isPinned),
         ),
         IconButton(
           icon: const Icon(Icons.check, size: 28),
+          color: contentColor,
           onPressed: _saveNote,
         ),
         const SizedBox(width: 8),
@@ -364,11 +380,11 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
       controller: _titleController,
       textAlign: TextAlign.start,
       style: GoogleFonts.poppins(
-          fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87),
+          fontSize: 28, fontWeight: FontWeight.bold, color: _contentColor),
       decoration: InputDecoration(
         hintText: l10n.translate('title_hint'),
         border: InputBorder.none,
-        hintStyle: const TextStyle(color: Colors.black38),
+        hintStyle: TextStyle(color: _contentColor.withValues(alpha: 0.4)),
       ),
     );
   }
@@ -379,18 +395,20 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
       controller: _contentController,
       textAlign: TextAlign.start,
       style: GoogleFonts.poppins(
-          fontSize: 18, color: Colors.black87, height: 1.6),
+          fontSize: 18, color: _contentColor, height: 1.6),
       maxLines: null,
       decoration: InputDecoration(
         hintText: l10n.translate('content_hint'),
         border: InputBorder.none,
-        hintStyle: const TextStyle(color: Colors.black38),
+        hintStyle: TextStyle(color: _contentColor.withValues(alpha: 0.4)),
       ),
     );
   }
 
   Widget _buildChecklistEditor() {
     final l10n = AppLocalizations.of(context);
+    final contentColor = _contentColor;
+
     return Column(
       children: [
         ..._checklistItems.asMap().entries.map((entry) {
@@ -402,6 +420,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
                 value: item.isDone,
                 onChanged: (val) => setState(() => item.isDone = val!),
                 activeColor: const Color(0xFF0061A4),
+                side: BorderSide(color: contentColor.withValues(alpha: 0.5)),
               ),
               Expanded(
                 child: TextField(
@@ -413,7 +432,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
                   style: GoogleFonts.poppins(
                     fontSize: 18,
                     decoration: item.isDone ? TextDecoration.lineThrough : null,
-                    color: item.isDone ? Colors.black38 : Colors.black87,
+                    color: item.isDone ? contentColor.withValues(alpha: 0.4) : contentColor,
                   ),
                   decoration: const InputDecoration(border: InputBorder.none),
                   onSubmitted: (_) {
@@ -423,7 +442,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.close, size: 20, color: Colors.black26),
+                icon: Icon(Icons.close, size: 20, color: contentColor.withValues(alpha: 0.3)),
                 onPressed: () => setState(() => _checklistItems.removeAt(idx)),
               ),
             ],
@@ -432,19 +451,21 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
         TextButton.icon(
           onPressed: () =>
               setState(() => _checklistItems.add(_ChecklistItem(text: ''))),
-          icon: const Icon(Icons.add),
-          label: Text(l10n.translate('add_item')),
+          icon: Icon(Icons.add, color: contentColor),
+          label: Text(l10n.translate('add_item'), style: TextStyle(color: contentColor)),
         ),
       ],
     );
   }
 
   Widget _buildCategoryPicker() {
+    final contentColor = _contentColor;
     return BlocBuilder<NotesCubit, NotesState>(
       builder: (context, state) {
         if (state is! NotesLoaded) return const SizedBox.shrink();
         return Wrap(
-          spacing: 8,
+          spacing: 10,
+          runSpacing: 10,
           children: state.categories.map((cat) {
             final isSelected = _selectedCategory == cat.name;
             return ChoiceChip(
@@ -452,8 +473,23 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
               selected: isSelected,
               onSelected: (selected) =>
                   setState(() => _selectedCategory = selected ? cat.name : null),
-              shape:
-                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              selectedColor: const Color(0xFF0061A4),
+              backgroundColor: contentColor.withValues(alpha: 0.05),
+              labelStyle: TextStyle(
+                color: isSelected ? Colors.white : contentColor.withValues(alpha: 0.8),
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                fontSize: 14,
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+              side: BorderSide(
+                color: isSelected ? const Color(0xFF001E30) : contentColor.withValues(alpha: 0.1),
+                width: isSelected ? 2.5 : 1,
+              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              showCheckmark: isSelected,
+              checkmarkColor: Colors.white,
+              elevation: isSelected ? 4 : 0,
+              pressElevation: 8,
             );
           }).toList(),
         );

@@ -1,26 +1,26 @@
-# Walkthrough - Full Translation & Dark Mode Fix
+# Walkthrough - Final UI Polish & Visibility Fix
 
-I have resolved the issues with the Dark Mode interface and implemented a complete localization system for both Arabic and English.
+I have applied a final layer of polish to resolve the visibility issues in the Side Drawer and ensure the category selection is as clear as possible.
 
-## 🌟 Key Fixes & Improvements
+## 🌟 Key Improvements
 
-### 🌙 Perfect Dark Mode
-- **Visible AppBar**: Fixed the "invisible" AppBar issue in Dark Mode. The top bar now has a deep dark background (`#121212`) with bright white text and icons, making it perfectly readable.
-- **Theme-Aware Gradients**: Updated the large titles to use dark-themed gradients, ensuring a consistent premium feel across both light and dark modes.
+### 🌙 High-Contrast Side Drawer
+- **Crystal Clear Text**: Boosted the visibility of unselected items (Archive, Trash, Settings) in Dark Mode. They now use a **90% Bright White** color, making them perfectly readable against the dark background.
+- **Improved Hierarchy**: Standardized the font size and icon alignment to give the menu a more professional and clean look.
 
-### 🗺️ Full App Translation (Arabic & English)
-- **Beyond Direction**: Switching to Arabic now translates **everything**—not just the direction. Every button, menu item, and hint text now speaks your language.
-- **Dynamic Language Switching**: Added a functional language toggle in the Settings page that updates the entire app's content instantly.
-- **Persisted Preferences**: Your language and theme choices are now saved to the device, so you don't have to set them every time you open the app.
+### 🏷️ Super-Clear Category Selection
+- **Bold Selection State**: Selected categories now feature a **thick dark border (2.5px)**, a **primary color background**, and a **prominent checkmark**.
+- **Shadow & Elevation**: Added a subtle shadow and elevation to the selected category so it "pops" out from the others.
+- **Adaptive Unselected State**: Unselected categories now have a very subtle background, ensuring the active one is always the focus.
 
-### ✍️ Arabic Writing Fix (RTL)
-- **Smart Alignment**: Fixed the cursor starting from the left. In Arabic mode, the cursor and text alignment now correctly start from the right side for all notes and search bars.
-- **Native Experience**: Used Flutter's `localizationsDelegates` to ensure that standard system components (like checkboxes and arrows) also adapt to the chosen language.
+### ✍️ Optimized Editor Experience
+- **More Space**: Refined the floating pill bar at the bottom to ensure it doesn't overlap with your text.
+- **Contrast Check**: All interactive elements (PDF export, lock, save) now use a dynamic contrast engine that works perfectly on any background color.
 
 ## 🛠️ Technical Summary
-- **L10n Engine**: Created a custom [AppLocalizations](file:///U:/StudioProjects/mynote/lib/logic/l10n/app_localizations.dart) system with English and Arabic string maps.
-- **Theme Logic**: Overhauled `darkTheme` in `main.dart` to provide high-contrast colors for Dark Mode surfaces.
-- **Global Provider**: Integrated `SettingsCubit` at the root of the app to manage theme and locale state reactively.
+- **Visibility**: Overrode unselected `ListTile` colors in the [AppDrawer](file:///U:/StudioProjects/mynote/lib/presentation/widgets/app_drawer.dart) using explicit `isDark` logic.
+- **Clarity**: Custom-styled the `ChoiceChip` in the [NoteEditorPage](file:///U:/StudioProjects/mynote/lib/presentation/pages/note_editor_page.dart) with enhanced borders and shadows.
+- **Build Fix**: Added `--add-opens` flags to `gradle.properties` to help with Java 25 compatibility issues.
 
-> [!TIP]
-> Go to **Settings (الإعدادات)** and try toggling the **Theme Mode** to **Dark (ليلي)** and **Language** to **Arabic (العربية)** to see the full transformation!
+> [!NOTE]
+> The build error `25.0.2` you encountered is related to the very new **Java 25** version on your system. I have added configuration flags to help Gradle handle this, but if problems persist, using Java 17 or 21 is recommended for Android development.

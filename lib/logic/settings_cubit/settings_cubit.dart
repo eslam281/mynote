@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,7 +14,8 @@ class SettingsCubit extends Cubit<SettingsState> {
     final prefs = await SharedPreferences.getInstance();
     
     final themeIndex = prefs.getInt('theme_mode') ?? ThemeMode.system.index;
-    final langCode = prefs.getString('language_code') ?? 'en';
+    final systemLang = Platform.localeName.startsWith('ar') ? 'ar' : 'en';
+    final langCode = prefs.getString('language_code') ?? systemLang;
 
     emit(state.copyWith(
       themeMode: ThemeMode.values[themeIndex],

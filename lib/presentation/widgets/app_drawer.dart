@@ -153,20 +153,30 @@ class AppDrawer extends StatelessWidget {
     required bool isSelected,
     required VoidCallback onTap,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final Color unselectedColor = isDark ? Colors.white.withValues(alpha: 0.9) : Colors.black54;
+    
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: ListTile(
         onTap: onTap,
+        mouseCursor: SystemMouseCursors.click,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        leading: Icon(icon, color: isSelected ? Colors.white : Colors.black54),
+        leading: Icon(
+          icon, 
+          color: isSelected ? Colors.white : unselectedColor,
+          size: 24,
+        ),
         title: Text(
           label,
           style: GoogleFonts.poppins(
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-            color: isSelected ? Colors.white : Colors.black87,
+            color: isSelected ? Colors.white : unselectedColor,
+            fontSize: 16,
           ),
         ),
         tileColor: isSelected ? const Color(0xFF0061A4) : Colors.transparent,
+        visualDensity: VisualDensity.comfortable,
       ),
     );
   }
