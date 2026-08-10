@@ -7,7 +7,7 @@ import 'logic/l10n/app_localizations.dart';
 import 'logic/notes_cubit/notes_cubit.dart';
 import 'logic/settings_cubit/settings_cubit.dart';
 import 'logic/settings_cubit/settings_state.dart';
-import 'presentation/pages/home_page.dart';
+import 'presentation/pages/home/home_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,25 +1,30 @@
 import 'dart:io';
 import 'dart:convert';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:share_plus/share_plus.dart' as sp;
-import '../../data/models/note_model.dart';
-import '../../logic/notes_cubit/notes_cubit.dart';
-import '../../logic/notes_cubit/notes_state.dart';
-import '../../logic/services/file_service.dart';
-import 'package:mynote/logic/services/audio_service.dart';
-import '../../logic/services/markdown_text_controller.dart';
-import '../../logic/services/pdf_service.dart';
-import '../../logic/l10n/app_localizations.dart';
-import '../widgets/editor/formatting_toolbar.dart';
-import '../widgets/editor/attachments_bar.dart';
-import '../widgets/editor/editor_bottom_panel.dart';
-import '../widgets/common/confirmation_dialogs.dart';
-import '../widgets/common/custom_bottom_sheets.dart';
 
+import '../../../data/models/checklist_item.dart';
+import '../../../data/models/note_model.dart';
+import '../../../logic/l10n/app_localizations.dart';
+import '../../../logic/notes_cubit/notes_cubit.dart';
+import '../../../logic/notes_cubit/notes_state.dart';
+import '../../../logic/services/audio_service.dart';
+import '../../../logic/services/file_service.dart';
+import '../../../logic/services/markdown_text_controller.dart';
+import '../../../logic/services/pdf_service.dart';
+import '../../widgets/common/confirmation_dialogs.dart';
+import '../../widgets/common/custom_bottom_sheets.dart';
+import '../../widgets/editor/attachments_bar.dart';
+import '../../widgets/editor/editor_bottom_panel.dart';
+import '../../widgets/editor/formatting_toolbar.dart';
+
+/// A comprehensive editor page for creating and editing notes.
+/// Supports Markdown formatting, checklists, attachments, and category selection.
 class NoteEditorPage extends StatefulWidget {
   final NoteModel? note;
 
@@ -29,17 +34,8 @@ class NoteEditorPage extends StatefulWidget {
   State<NoteEditorPage> createState() => _NoteEditorPageState();
 }
 
-class _ChecklistItem {
-  String text;
-  bool isDone;
-  _ChecklistItem({required this.text, this.isDone = false});
-
-  Map<String, dynamic> toMap() => {'text': text, 'isDone': isDone};
-  factory _ChecklistItem.fromMap(Map<String, dynamic> map) =>
-      _ChecklistItem(text: map['text'], isDone: map['isDone']);
-}
-
 class _NoteEditorPageState extends State<NoteEditorPage> {
+  // --- Controllers & State Variables ---
   late TextEditingController _titleController;
   late TextEditingController _contentController;
   late int _selectedColor;
@@ -49,7 +45,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
   bool _isRecording = false;
   String? _selectedCategory;
   List<String> _attachments = [];
-  List<_ChecklistItem> _checklistItems = [];
+  List<ChecklistItem> _checklistItems = [];
 
   final List<int> _colors = [
     0xFFFFFFFF, 0xFFF28B82, 0xFFFBBC04, 0xFFFFF475,
@@ -60,9 +56,13 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
   @override
   void initState() {
     super.initState();
+    _initializeFields();
+  }
+
+  /// Populates initial state from the provided note model or sets defaults.
+  void _initializeFields() {
     _titleController = TextEditingController(text: widget.note?.title ?? '');
-    _contentController =
-        MarkdownTextController()..text = widget.note?.content ?? '';
+    _contentController = MarkdownTextController()..text = widget.note?.content ?? '';
     _selectedColor = widget.note?.color ?? _colors[0];
     _isPinned = widget.note?.isPinned ?? false;
     _isLocked = widget.note?.isLocked ?? false;
@@ -73,10 +73,10 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
     if (_isChecklist && widget.note?.content != null) {
       try {
         final List<dynamic> decoded = jsonDecode(widget.note!.content);
-        _checklistItems =
-            decoded.map((e) => _ChecklistItem.fromMap(e)).toList();
+        _checklistItems = decoded.map((e) => ChecklistItem.fromMap(e)).toList();
       } catch (e) {
-        _checklistItems = [_ChecklistItem(text: widget.note!.content)];
+        // Fallback if content is not valid JSON
+        _checklistItems = [ChecklistItem(text: widget.note!.content)];
       }
     }
   }
@@ -88,6 +88,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
     super.dispose();
   }
 
+  /// Determines if there are unsaved changes.
   bool get _isDirty {
     final title = _titleController.text.trim();
     final content = _isChecklist
@@ -111,18 +112,23 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
         _attachments.length != widget.note!.attachments.length;
   }
 
+  /// Calculates a high-contrast text color based on the current background color.
   Color get _contentColor {
     return ThemeData.estimateBrightnessForColor(Color(_selectedColor)) == Brightness.light
         ? const Color(0xFF001E30)
         : Colors.white;
   }
 
+  // --- Logic Methods ---
+
+  /// Collects data and saves the note via [NotesCubit].
   void _saveNote() {
     final title = _titleController.text.trim();
     final content = _isChecklist
         ? jsonEncode(_checklistItems.map((e) => e.toMap()).toList())
         : _contentController.text.trim();
 
+    // Prevent saving empty notes unless they have attachments.
     if (title.isEmpty && content.isEmpty && _attachments.isEmpty) {
       Navigator.pop(context);
       return;
@@ -150,16 +156,16 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
     Navigator.pop(context);
   }
 
+  /// Switches between plain text and checklist mode, converting content accordingly.
   void _toggleChecklist() {
     setState(() {
       _isChecklist = !_isChecklist;
       if (_isChecklist) {
-        final lines =
-            _contentController.text.split('\n').where((l) => l.trim().isNotEmpty);
+        final lines = _contentController.text.split('\n').where((l) => l.trim().isNotEmpty);
         if (lines.isNotEmpty) {
-          _checklistItems = lines.map((l) => _ChecklistItem(text: l)).toList();
+          _checklistItems = lines.map((l) => ChecklistItem(text: l)).toList();
         } else if (_checklistItems.isEmpty) {
-          _checklistItems = [_ChecklistItem(text: '')];
+          _checklistItems = [ChecklistItem(text: '')];
         }
       } else {
         _contentController.text = _checklistItems.map((e) => e.text).join('\n');
@@ -167,6 +173,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
     });
   }
 
+  /// Handles audio recording start/stop.
   Future<void> _handleMic() async {
     if (_isRecording) {
       final path = await AudioService.stopRecording();
@@ -195,13 +202,13 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
   Future<void> _pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null && result.files.single.path != null) {
-      final savedPath =
-          await FileService.saveAttachment(File(result.files.single.path!));
+      final savedPath = await FileService.saveAttachment(File(result.files.single.path!));
       if (!mounted) return;
       setState(() => _attachments.add(savedPath));
     }
   }
 
+  /// Wraps or unwraps selected text with Markdown markers (e.g., **, *).
   void _formatText(String marker) {
     final text = _contentController.text;
     final selection = _contentController.selection;
@@ -211,10 +218,9 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
     final end = selection.end;
     final selectedText = text.substring(start, end);
 
-    // Check if selection is already wrapped
     final bool isWrapped = selectedText.startsWith(marker) && selectedText.endsWith(marker);
 
-    // Check if selection is INSIDE markers (e.g. cursor at |word| in **|word|**)
+    // Check if selection is already inside markers
     bool isInside = false;
     if (!isWrapped && start >= marker.length && end <= text.length - marker.length) {
       final before = text.substring(start - marker.length, start);
@@ -251,7 +257,6 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
   }
 
   void _addBullet() {
-// ...
     final text = _contentController.text;
     final selection = _contentController.selection;
     
@@ -259,14 +264,15 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
       final currentPos = selection.baseOffset;
       final newText = text.replaceRange(currentPos, currentPos, '\n• ');
       _contentController.text = newText;
-      _contentController.selection =
-          TextSelection.collapsed(offset: currentPos + 3);
+      _contentController.selection = TextSelection.collapsed(offset: currentPos + 3);
     } else {
       final newText = '$text\n• ';
       _contentController.text = newText;
       _contentController.selection = TextSelection.collapsed(offset: newText.length);
     }
   }
+
+  // --- Build Methods ---
 
   @override
   Widget build(BuildContext context) {
@@ -295,13 +301,11 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
           children: [
             Expanded(
               child: ListView(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 children: [
                   AttachmentsBar(
                     attachments: _attachments,
-                    onRemoveAttachment: (index) =>
-                        setState(() => _attachments.removeAt(index)),
+                    onRemoveAttachment: (index) => setState(() => _attachments.removeAt(index)),
                   ),
                   _buildTitleField(),
                   const SizedBox(height: 8),
@@ -383,8 +387,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
           icon: const Icon(Icons.share_outlined),
           color: contentColor,
           onPressed: () {
-            sp.Share.share(
-                "${_titleController.text}\n\n${_contentController.text}");
+            sp.Share.share("${_titleController.text}\n\n${_contentController.text}");
           },
         ),
         IconButton(
@@ -441,7 +444,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
       children: [
         ..._checklistItems.asMap().entries.map((entry) {
           int idx = entry.key;
-          _ChecklistItem item = entry.value;
+          ChecklistItem item = entry.value;
           return Row(
             children: [
               Checkbox(
@@ -453,8 +456,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
               Expanded(
                 child: TextField(
                   controller: TextEditingController(text: item.text)
-                    ..selection = TextSelection.fromPosition(
-                        TextPosition(offset: item.text.length)),
+                    ..selection = TextSelection.fromPosition(TextPosition(offset: item.text.length)),
                   onChanged: (val) => item.text = val,
                   textAlign: TextAlign.start,
                   style: GoogleFonts.poppins(
@@ -464,8 +466,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
                   ),
                   decoration: const InputDecoration(border: InputBorder.none),
                   onSubmitted: (_) {
-                    setState(() => _checklistItems.insert(
-                        idx + 1, _ChecklistItem(text: '')));
+                    setState(() => _checklistItems.insert(idx + 1, ChecklistItem(text: '')));
                   },
                 ),
               ),
@@ -477,8 +478,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
           );
         }),
         TextButton.icon(
-          onPressed: () =>
-              setState(() => _checklistItems.add(_ChecklistItem(text: ''))),
+          onPressed: () => setState(() => _checklistItems.add(ChecklistItem(text: ''))),
           icon: Icon(Icons.add, color: contentColor),
           label: Text(l10n.translate('add_item'), style: TextStyle(color: contentColor)),
         ),
@@ -487,7 +487,9 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
   }
 
   Widget _buildCategoryPicker() {
+    final isDarkApp = Theme.of(context).brightness == Brightness.dark;
     final contentColor = _contentColor;
+    
     return BlocBuilder<NotesCubit, NotesState>(
       builder: (context, state) {
         if (state is! NotesLoaded) return const SizedBox.shrink();
@@ -499,18 +501,24 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
             return RawChip(
               label: Text(cat.name),
               selected: isSelected,
-              onSelected: (selected) =>
-                  setState(() => _selectedCategory = selected ? cat.name : null),
+              onSelected: (selected) => setState(() => _selectedCategory = selected ? cat.name : null),
               selectedColor: const Color(0xFF0061A4),
-              backgroundColor: Colors.transparent,
+              // Use a more distinct background for unselected chips in Dark Mode
+              backgroundColor: isSelected 
+                  ? const Color(0xFF0061A4) 
+                  : (isDarkApp ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05)),
               labelStyle: TextStyle(
-                color: isSelected ? Colors.white : Colors.white,
+                color: isSelected 
+                    ? Colors.white 
+                    : (isDarkApp ? Colors.white70 : const Color(0xFF001E30)),
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                 fontSize: 14,
               ),
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               side: BorderSide(
-                color: isSelected ? const Color(0xFF001E30) : contentColor.withValues(alpha: 0.2),
+                color: isSelected 
+                    ? const Color(0xFF001E30) 
+                    : (isDarkApp ? Colors.white24 : Colors.black12),
                 width: isSelected ? 2 : 1,
               ),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

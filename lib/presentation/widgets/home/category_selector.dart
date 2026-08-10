@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../logic/l10n/app_localizations.dart';
 import '../../../logic/notes_cubit/notes_state.dart';
-import '../../pages/category_manager_page.dart';
+import '../../pages/category/category_manager_page.dart';
 
 class CategorySelector extends StatelessWidget {
   final NotesLoaded state;

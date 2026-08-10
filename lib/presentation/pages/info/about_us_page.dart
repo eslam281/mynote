@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../logic/l10n/app_localizations.dart';
+import '../../../logic/l10n/app_localizations.dart';
 
 class AboutUsPage extends StatelessWidget {
   const AboutUsPage({super.key});
@@ -107,7 +107,7 @@ class AboutUsPage extends StatelessWidget {
           child: CircleAvatar(
             radius: 50,
             backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-            child: Icon(Icons.person_rounded, size: 60, color: const Color(0xFF0061A4)),
+            child: const Icon(Icons.person_rounded, size: 60, color: Color(0xFF0061A4)),
           ),
         ),
         const SizedBox(height: 15),

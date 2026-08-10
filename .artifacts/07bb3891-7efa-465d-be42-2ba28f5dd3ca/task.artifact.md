@@ -1,14 +1,23 @@
-# Tasks - UI Visibility & Refinement
+# Tasks - Project Cleanup & Error Correction
 
-- `[/]` Side Drawer Polish
-    - `[ ]` Fix text/icon visibility in Dark Mode
-    - `[ ]` Ensure proper theme-aware background
-- `[ ]` Editor Component Refinement
-    - `[ ]` Redesign `EditorBottomPanel` as a floating pill
-    - `[ ]` Enhance `ChoiceChip` selection clarity in `NoteEditorPage`
-- `[ ]` Global Theme Check
-    - `[ ]` Verify SearchBar text colors in `HomeAppBar`
-    - `[ ]` Audit Contrast across all secondary screens
-- `[ ]` Verification
-    - `[ ]` Verify screenshot match (drawer readable)
-    - `[ ]` Confirm "cramped" feel is resolved
+- `[x]` Project Restructuring
+    - `[x]` Move pages to subfolders (`home/`, `editor/`, `settings/`, etc.)
+    - `[x]` Update all global imports
+- `[x]` Note Editor Cleanup
+    - `[x]` Extract `ChecklistItem` model
+    - `[x]` Break build method into smaller private widgets
+    - `[x]` Standardize formatting logic
+- `[x]` UI & Contrast Polish
+    - `[x]` Fix Category Chip visibility in Light Mode
+    - `[x]` Standardize spacing and margins in the Editor
+- `[x]` Bug Fixes & Error Correction
+    - `[x]` Fix analyzer errors in `notes_cubit_test.dart` (Return type mismatch)
+    - `[x]` Fix unused variables in `markdown_text_controller.dart`
+    - `[x]` Fix deprecated `Share` usage in `note_editor_page.dart` (Note: Deprecated info remains but errors fixed)
+    - `[x]` Fix unused variable in `integration_test/app_test.dart`
+- `[x]` Documentation & Standards
+    - `[x]` Group imports in all organized files
+    - `[x]` Add KDoc/Comments to complex logic
+- `[x]` Final Verification
+    - `[x]` Run `flutter analyze` and ensure zero errors
+    - `[x]` Run unit tests and ensure they pass

@@ -10,14 +10,8 @@ class MarkdownTextController extends TextEditingController {
     final List<TextSpan> children = [];
     
     // Regular expressions for markdown patterns
-    // We use non-capturing groups for the markers but capturing for the content
-    final boldRegex = RegExp(r'\*\*(.*?)\*\*');
-    final italicRegex = RegExp(r'\*(.*?)\*');
-    final bulletRegex = RegExp(r'^•\s.*', multiLine: true);
-
     // Combine them into one regex for splitMapJoin
-    // We need to be careful with overlapping matches (like bold containing italic)
-    // Here we prioritize Bold then Italic
+    // Group 1: Bold content, Group 2: Italic content
     final combinedRegex = RegExp(r'\*\*(.*?)\*\*|\*(.*?)\*|^•\s.*', multiLine: true);
 
     text.splitMapJoin(
@@ -25,7 +19,6 @@ class MarkdownTextController extends TextEditingController {
       onMatch: (Match match) {
         final matchText = match[0]!;
         
-        // Group 1 is Bold content, Group 2 is Italic content
         if (matchText.startsWith('**') && matchText.endsWith('**')) {
           final content = match.group(1) ?? '';
           _addStyled(children, '**', content, '**', style?.copyWith(fontWeight: FontWeight.bold));

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../logic/l10n/app_localizations.dart';
-import '../../logic/notes_cubit/notes_cubit.dart';
-import '../../logic/notes_cubit/notes_state.dart';
+import '../../../logic/l10n/app_localizations.dart';
+import '../../../logic/notes_cubit/notes_cubit.dart';
+import '../../../logic/notes_cubit/notes_state.dart';
 
 class CategoryManagerPage extends StatefulWidget {
   const CategoryManagerPage({super.key});

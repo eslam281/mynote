@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../logic/l10n/app_localizations.dart';
-import '../../logic/settings_cubit/settings_cubit.dart';
-import '../../logic/settings_cubit/settings_state.dart';
+import '../../../logic/l10n/app_localizations.dart';
+import '../../../logic/settings_cubit/settings_cubit.dart';
+import '../../../logic/settings_cubit/settings_state.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});

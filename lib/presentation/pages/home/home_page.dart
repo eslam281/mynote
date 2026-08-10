@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../logic/l10n/app_localizations.dart';
-import '../../data/models/note_model.dart';
-import '../../logic/notes_cubit/notes_cubit.dart';
-import '../../logic/notes_cubit/notes_state.dart';
-import '../../logic/services/auth_service.dart';
-import '../widgets/app_drawer.dart';
-import '../widgets/home/home_app_bar.dart';
-import '../widgets/home/category_selector.dart';
-import '../widgets/home/notes_view.dart';
-import '../widgets/home/trash_reminder.dart';
-import '../widgets/common/confirmation_dialogs.dart';
-import '../widgets/common/custom_bottom_sheets.dart';
-import 'note_editor_page.dart';
+import '../../../logic/l10n/app_localizations.dart';
+import '../../../data/models/note_model.dart';
+import '../../../logic/notes_cubit/notes_cubit.dart';
+import '../../../logic/notes_cubit/notes_state.dart';
+import '../../../logic/services/auth_service.dart';
+import '../../widgets/app_drawer.dart';
+import '../../widgets/home/home_app_bar.dart';
+import '../../widgets/home/category_selector.dart';
+import '../../widgets/home/notes_view.dart';
+import '../../widgets/home/trash_reminder.dart';
+import '../../widgets/common/confirmation_dialogs.dart';
+import '../../widgets/common/custom_bottom_sheets.dart';
+import '../editor/note_editor_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

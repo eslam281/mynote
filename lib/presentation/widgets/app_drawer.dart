@@ -4,10 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../logic/l10n/app_localizations.dart';
 import '../../logic/notes_cubit/notes_cubit.dart';
 import '../../logic/notes_cubit/notes_state.dart';
-import '../pages/category_manager_page.dart';
-import '../pages/about_us_page.dart';
-import '../pages/contact_us_page.dart';
-import '../pages/settings_page.dart';
+import '../pages/category/category_manager_page.dart';
+import '../pages/info/about_us_page.dart';
+import '../pages/info/contact_us_page.dart';
+import '../pages/settings/settings_page.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});

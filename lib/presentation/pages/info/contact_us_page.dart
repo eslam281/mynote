@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../logic/l10n/app_localizations.dart';
+import '../../../logic/l10n/app_localizations.dart';
 
 class ContactUsPage extends StatelessWidget {
   const ContactUsPage({super.key});
