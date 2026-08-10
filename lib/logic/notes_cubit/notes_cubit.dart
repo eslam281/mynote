@@ -19,7 +19,9 @@ class NotesCubit extends Cubit<NotesState> {
     }
 
     try {
-      await sqlDb.purgeDeletedNotes(30); // Auto-purge notes older than 30 days
+      // Don't await purge to keep UI snappy
+      sqlDb.purgeDeletedNotes(30); 
+
       final categories = await sqlDb.readAllCategories();
       List<NoteModel> notes;
       

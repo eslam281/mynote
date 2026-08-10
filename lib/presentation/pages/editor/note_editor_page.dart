@@ -451,6 +451,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
                 value: item.isDone,
                 onChanged: (val) => setState(() => item.isDone = val!),
                 activeColor: const Color(0xFF0061A4),
+                checkColor: Colors.white,
                 side: BorderSide(color: contentColor.withValues(alpha: 0.5)),
               ),
               Expanded(
@@ -462,6 +463,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
                   style: GoogleFonts.poppins(
                     fontSize: 18,
                     decoration: item.isDone ? TextDecoration.lineThrough : null,
+                    decorationColor: contentColor.withValues(alpha: 0.5),
                     color: item.isDone ? contentColor.withValues(alpha: 0.4) : contentColor,
                   ),
                   decoration: const InputDecoration(border: InputBorder.none),

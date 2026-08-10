@@ -45,8 +45,20 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       key: _scaffoldKey,
       drawer: const AppDrawer(),
-      body: BlocBuilder<NotesCubit, NotesState>(
+      body: BlocConsumer<NotesCubit, NotesState>(
+        listener: (context, state) {
+          if (state is NotesError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message), backgroundColor: Colors.red),
+            );
+          }
+        },
         builder: (context, state) {
+          if (state is NotesError && state.message.isNotEmpty) {
+             // If we had notes before, show them even with error, else show error msg
+             // For now, let's just allow it to fall through or show a retry button
+          }
+
           if (state is! NotesLoaded) {
             return const Center(child: CircularProgressIndicator());
           }
