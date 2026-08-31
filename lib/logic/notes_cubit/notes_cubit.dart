@@ -98,10 +98,20 @@ class NotesCubit extends Cubit<NotesState> {
   }
 
   Future<void> duplicateNote(NoteModel note) async {
-    final newNote = note.copyWith(
-      id: null,
+    // Create a fresh instance without an ID to ensure SQLite auto-generates a new one
+    final newNote = NoteModel(
       title: "${note.title} (Copy)",
-      createdAt: DateTime.now()
+      content: note.content,
+      color: note.color,
+      isPinned: note.isPinned,
+      isArchived: note.isArchived,
+      isDeleted: false,
+      category: note.category,
+      attachments: note.attachments,
+      isLocked: note.isLocked,
+      isChecklist: note.isChecklist,
+      reminderAt: note.reminderAt,
+      createdAt: DateTime.now(),
     );
     await addNote(newNote);
   }

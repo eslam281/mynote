@@ -1,23 +1,26 @@
-# Walkthrough - Dark Mode Contrast Fix
+# Walkthrough - Enhanced Attachments & Project Documentation
 
-I have resolved the visibility issue in Dark Mode where unselected category names were appearing as dark blocks, making them hard to read.
+I have implemented interactive attachment handling and established a `CLAUDE.md` development guide to ensure the project remains professional and easy to maintain.
 
-## 🌟 Key Fixes
+## 🌟 Key Improvements
 
-### 🏷️ Category Chip Contrast
-- **Theme-Aware Styling**: Updated the category picker logic to explicitly check the app's current theme (Dark vs Light).
-- **Automatic Contrast**:
-    - In **Dark Mode**: Unselected categories now use a subtle light-grey background (`white` with 10% opacity) and **Bright White** text.
-    - In **Light Mode**: They use a soft dark-grey background and **Deep Black** text.
-- **Improved Borders**: Applied adaptive border colors to ensure the chips are well-defined against any note background color.
+### 📎 Interactive Attachments
+- **Full-Screen Image Viewer**: Tapping any image thumbnail now opens it in a dedicated viewer with **Pinch-to-Zoom** support. This allows you to inspect small details or read text within photos easily.
+- **Universal File Opening**:
+    - **Integrated Logic**: Every attached file (PDF, Video, Document) is now openable. The app uses the system's default viewer to handle different file types seamlessly.
+    - **Smart Indicators**: Generic files now show descriptive icons (PDF icon, Video icon) and their actual filenames, making the attachments bar much more informative.
+    - **Audio Playback**: Maintained direct audio playback for recorded notes while improving the visual representation.
 
-### ✍️ Refined Editor Visibility
-- **Smart Labels**: Ensured that the "Unselected" state of categories is visually distinct from the "Selected" state (which remains the primary blue with a checkmark) while maintaining 100% legibility.
-- **Dynamic Icons**: All toolbar and header icons remain fully adaptive, switching between white and dark blue based on your chosen note color.
+### 📜 Project Governance (`CLAUDE.md`)
+- **New Guidelines**: Created a [CLAUDE.md](file:///U:/StudioProjects/mynote/CLAUDE.md) file at the project root. This document serves as a "brain" for future development, defining:
+    - **Architecture layers** (Data, Logic, Presentation).
+    - **Strict coding rules** (No hardcoded strings, Privacy First, Adaptive UI).
+    - **Common commands** for building, testing, and analyzing.
 
 ## 🛠️ Technical Summary
-- **Logic**: Integrated `Theme.of(context).brightness` into the `RawChip` builder in [NoteEditorPage](file:///U:/StudioProjects/mynote/lib/presentation/pages/editor/note_editor_page.dart).
-- **Refinement**: Switched from using a tint of the note color to using a tint of the theme surface color for unselected chips to prevent "camouflage" bugs.
+- **New Dependencies**: Added `photo_view` (for zooming) and `open_file_plus` (for universal file handling) to `pubspec.yaml`.
+- **Hero Animations**: Implemented `Hero` tags so images "fly" from the thumbnail to the full-screen view for a premium feel.
+- **Dynamic Routing**: Added `AttachmentViewerPage` for immersive media consumption.
 
 > [!TIP]
-> Switch to Dark Mode and open the Note Editor. You'll notice the unselected categories are now crisp, white, and perfectly visible!
+> Try attaching a PDF or a photo to a note! You'll notice that you can now zoom into photos and open PDFs directly with a single tap.
