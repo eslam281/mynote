@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
-import 'package:open_file_plus/open_file_plus.dart';
+import 'package:open_filex/open_filex.dart';
 import '../../../logic/services/audio_service.dart';
 import '../../pages/editor/attachment_viewer_page.dart';
 
@@ -117,7 +117,7 @@ class AttachmentsBar extends StatelessWidget {
       if (path.toLowerCase().endsWith('.m4a') || path.toLowerCase().endsWith('.mp3')) {
         AudioService.playAudio(path);
       } else {
-        OpenFile.open(path);
+        OpenFilex.open(path);
       }
     }
   }

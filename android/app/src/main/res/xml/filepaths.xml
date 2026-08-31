@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-path name="external_files" path="."/>
+    <cache-path name="cache_files" path="."/>
+    <files-path name="files" path="."/>
+    <!-- هذا السطر يحل مشكلة المسارات الخاصة بـ Flutter مثل app_flutter -->
+    <root-path name="root" path="." />
+</paths>
