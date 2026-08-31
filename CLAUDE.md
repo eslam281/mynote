@@ -4,6 +4,8 @@
 MyNote Pro is a high-performance, privacy-first Flutter note-taking app. It features a WYSIWYG markdown editor, audio recording, biometric security, and local SQLite persistence. Data never leaves the device.
 
 ## Architecture & Layers
+For new features and refactoring, follow the **Clean Architecture** protocol defined in [SKILLS.md](file:///U:/StudioProjects/mynote/SKILLS.md).
+
 ### 1. Data Layer (`lib/data`)
 - **SQLite (`database/sqldb.dart`)**: Version 6. Handles `notes` and `categories` tables.
     - **Note Schema**: `id`, `title`, `content`, `color`, `isPinned`, `isArchived`, `isDeleted`, `deletedAt`, `category`, `attachments` (JSON string), `isLocked`, `isChecklist`, `reminderAt`, `createdAt`.
