@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+4
+version: 1.0.0+5
 
 environment:
   sdk: '>=3.4.3 <4.0.0'
@@ -39,30 +39,30 @@ dependencies:
   cupertino_icons: ^1.0.6
   sqflite: ^2.4.2
   path: any
-  flutter_bloc: ^8.1.6
+  flutter_bloc: ^9.1.1
   equatable: ^2.0.5
-  google_fonts: ^6.2.1
+  google_fonts: ^8.2.1
   intl: ^0.20.2
   flutter_staggered_grid_view: ^0.7.0
-  flutter_animate: ^4.5.0
-  share_plus: ^12.0.2
-  lottie: ^3.1.2
-  image_picker: ^1.1.2
-  file_picker: ^8.1.4
-  path_provider: ^2.1.4
+  flutter_animate: ^4.5.2
+  share_plus: ^13.3.0
+  lottie: ^3.5.1
+  image_picker: ^1.2.3
+  file_picker: ^12.2.0
+  path_provider: ^2.1.6
   shared_preferences: ^2.2.3
-  local_auth: ^2.3.0
-  local_auth_android: ^1.0.36
-  local_auth_darwin: ^1.1.0
-  pdf: ^3.11.1
-  printing: ^5.14.3
+  local_auth: ^3.0.2
+  local_auth_android: ^2.0.10
+  local_auth_darwin: ^2.0.4
+  pdf: ^3.13.0
+  printing: ^5.15.0
   url_launcher: ^6.3.0
   flutter_local_notifications: ^17.2.2
-  record: ^6.2.1
-  audioplayers: ^6.1.0
+  record: ^7.1.1
+  audioplayers: ^6.8.1
   flutter_markdown: ^0.7.3
   flutter_launcher_icons: ^0.14.4
-  open_filex: 4.7.0
+  open_filex: ^4.7.0
   photo_view: ^0.15.0
 
 dev_dependencies:
@@ -72,7 +72,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^1.0.4
-  bloc_test: ^9.1.7
+  bloc_test: ^10.0.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

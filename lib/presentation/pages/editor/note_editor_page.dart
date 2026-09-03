@@ -200,9 +200,9 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
   }
 
   Future<void> _pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    if (result != null && result.files.single.path != null) {
-      final savedPath = await FileService.saveAttachment(File(result.files.single.path!));
+    final result = await FilePicker.pickFile();
+    if (result != null && result.path != null) {
+      final savedPath = await FileService.saveAttachment(File(result.path!));
       if (!mounted) return;
       setState(() => _attachments.add(savedPath));
     }
@@ -387,7 +387,9 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
           icon: const Icon(Icons.share_outlined),
           color: contentColor,
           onPressed: () {
-            sp.Share.share("${_titleController.text}\n\n${_contentController.text}");
+            sp.SharePlus.instance.share(sp.ShareParams(
+              text: "${_titleController.text}\n\n${_contentController.text}",
+            ));
           },
         ),
         IconButton(
@@ -438,7 +440,6 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
 
   Widget _buildChecklistEditor() {
     final l10n = AppLocalizations.of(context);
-    final contentColor = _contentColor;
 
     return Column(
       children: [
@@ -452,7 +453,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
                 onChanged: (val) => setState(() => item.isDone = val!),
                 activeColor: const Color(0xFF0061A4),
                 checkColor: Colors.white,
-                side: BorderSide(color: contentColor.withValues(alpha: 0.5)),
+                side: BorderSide(color: _contentColor.withValues(alpha: 0.5)),
               ),
               Expanded(
                 child: TextField(
@@ -463,8 +464,8 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
                   style: GoogleFonts.poppins(
                     fontSize: 18,
                     decoration: item.isDone ? TextDecoration.lineThrough : null,
-                    decorationColor: contentColor.withValues(alpha: 0.5),
-                    color: item.isDone ? contentColor.withValues(alpha: 0.4) : contentColor,
+                    decorationColor: _contentColor.withValues(alpha: 0.5),
+                    color: item.isDone ? _contentColor.withValues(alpha: 0.4) : _contentColor,
                   ),
                   decoration: const InputDecoration(border: InputBorder.none),
                   onSubmitted: (_) {
@@ -473,7 +474,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.close, size: 20, color: contentColor.withValues(alpha: 0.3)),
+                icon: Icon(Icons.close, size: 20, color: _contentColor.withValues(alpha: 0.3)),
                 onPressed: () => setState(() => _checklistItems.removeAt(idx)),
               ),
             ],
@@ -481,8 +482,8 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
         }),
         TextButton.icon(
           onPressed: () => setState(() => _checklistItems.add(ChecklistItem(text: ''))),
-          icon: Icon(Icons.add, color: contentColor),
-          label: Text(l10n.translate('add_item'), style: TextStyle(color: contentColor)),
+          icon: Icon(Icons.add, color: _contentColor),
+          label: Text(l10n.translate('add_item'), style: TextStyle(color: _contentColor)),
         ),
       ],
     );
@@ -490,7 +491,6 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
 
   Widget _buildCategoryPicker() {
     final isDarkApp = Theme.of(context).brightness == Brightness.dark;
-    final contentColor = _contentColor;
     
     return BlocBuilder<NotesCubit, NotesState>(
       builder: (context, state) {
@@ -508,11 +508,11 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
               // Use a more distinct background for unselected chips in Dark Mode
               backgroundColor: isSelected 
                   ? const Color(0xFF0061A4) 
-                  : (isDarkApp ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05)),
+                  : (isDarkApp ? Colors.white.withValues(alpha: 0.15) : Colors.black.withValues(alpha: 0.05)),
               labelStyle: TextStyle(
                 color: isSelected 
                     ? Colors.white 
-                    : (isDarkApp ? Colors.white70 : const Color(0xFF001E30)),
+                    : (isDarkApp ? Colors.white : const Color(0xFF001E30)),
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                 fontSize: 14,
               ),

@@ -9,24 +9,20 @@ class AuthService {
     final bool canAuthenticateWithBiometrics = await _auth.canCheckBiometrics;
     final bool canAuthenticate = canAuthenticateWithBiometrics || await _auth.isDeviceSupported();
 
-    if (!canAuthenticate) return true; // If device has no security, allow access
+    if (!canAuthenticate) return true;
 
     try {
       return await _auth.authenticate(
         localizedReason: 'Please authenticate to view this locked note',
-        options: const AuthenticationOptions(
-          stickyAuth: true,
-          biometricOnly: false,
-        ),
         authMessages: const [
           AndroidAuthMessages(
             signInTitle: 'Locked Note',
-            biometricHint: 'Verify identity',
+            signInHint: 'Verify identity',
           ),
-          IOSAuthMessages(
-            lockOut: 'Please re-enable Touch ID',
-          ),
+          IOSAuthMessages(),
         ],
+        biometricOnly: false,
+        persistAcrossBackgrounding: true,
       );
     } catch (e) {
       return false;

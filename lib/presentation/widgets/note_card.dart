@@ -23,6 +23,10 @@ class NoteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color contentColor = ThemeData.estimateBrightnessForColor(Color(note.color)) == Brightness.light
+        ? const Color(0xFF001E30)
+        : Colors.white;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
@@ -60,7 +64,7 @@ class NoteCard extends StatelessWidget {
                             style: GoogleFonts.poppins(
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
-                              color: const Color(0xFF001E30),
+                              color: contentColor,
                               height: 1.3,
                             ),
                             maxLines: 2,
@@ -72,21 +76,21 @@ class NoteCard extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color: Colors.black.withValues(alpha: 0.05),
+                              color: contentColor.withValues(alpha: 0.05),
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.push_pin_rounded, size: 16, color: Color(0xFF0061A4)),
+                            child: Icon(Icons.push_pin_rounded, size: 16, color: contentColor.withValues(alpha: 0.8)),
                           ),
                       ],
                     ),
                     const SizedBox(height: 12),
                     if (note.isLocked)
-                      _buildLockedContent()
+                      _buildLockedContent(contentColor)
                     else ...[
                       if (note.attachments.isNotEmpty)
-                        _buildAttachmentsPreview(),
+                        _buildAttachmentsPreview(contentColor),
                       if (note.isChecklist)
-                        _buildChecklistPreview()
+                        _buildChecklistPreview(contentColor)
                       else if (note.content.isNotEmpty)
                         ConstrainedBox(
                           constraints: BoxConstraints(maxHeight: isListMode ? 50 : 120),
@@ -95,7 +99,7 @@ class NoteCard extends StatelessWidget {
                             styleSheet: MarkdownStyleSheet(
                               p: GoogleFonts.poppins(
                                 fontSize: 14,
-                                color: const Color(0xFF001E30).withValues(alpha: 0.7),
+                                color: contentColor.withValues(alpha: 0.7),
                                 height: 1.6,
                               ),
                             ),
@@ -103,14 +107,14 @@ class NoteCard extends StatelessWidget {
                         ),
                     ],
                     const SizedBox(height: 24),
-                    _buildFooter(),
+                    _buildFooter(contentColor),
                   ],
                 ),
               ),
               if (note.isLocked)
                 Positioned.fill(
                   child: Center(
-                    child: Icon(Icons.lock_rounded, color: const Color(0xFF0061A4).withValues(alpha: 0.4), size: 32),
+                    child: Icon(Icons.lock_rounded, color: contentColor.withValues(alpha: 0.4), size: 32),
                   ),
                 ),
             ],
@@ -123,7 +127,7 @@ class NoteCard extends StatelessWidget {
         .scale(begin: const Offset(0.9, 0.9), duration: 400.ms, curve: Curves.bounceOut);
   }
 
-  Widget _buildLockedContent() {
+  Widget _buildLockedContent(Color contentColor) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -133,7 +137,7 @@ class NoteCard extends StatelessWidget {
             imageFilter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
             child: Text(
               'This note is locked and protected by security.',
-              style: GoogleFonts.poppins(fontSize: 14),
+              style: GoogleFonts.poppins(fontSize: 14, color: contentColor.withValues(alpha: 0.5)),
             ),
           ),
         ),
@@ -141,7 +145,7 @@ class NoteCard extends StatelessWidget {
     );
   }
 
-  Widget _buildChecklistPreview() {
+  Widget _buildChecklistPreview(Color contentColor) {
     try {
       final List<dynamic> items = jsonDecode(note.content);
       final previewItems = items.take(3).toList();
@@ -155,7 +159,7 @@ class NoteCard extends StatelessWidget {
                 Icon(
                   item['isDone'] ? Icons.check_box_rounded : Icons.check_box_outline_blank_rounded,
                   size: 14,
-                  color: item['isDone'] ? const Color(0xFF0061A4) : Colors.black38,
+                  color: item['isDone'] ? contentColor.withValues(alpha: 0.8) : contentColor.withValues(alpha: 0.4),
                 ),
                 const SizedBox(width: 6),
                 Expanded(
@@ -164,7 +168,7 @@ class NoteCard extends StatelessWidget {
                     style: GoogleFonts.poppins(
                       fontSize: 13,
                       decoration: item['isDone'] ? TextDecoration.lineThrough : null,
-                      color: item['isDone'] ? Colors.black38 : Colors.black87,
+                      color: item['isDone'] ? contentColor.withValues(alpha: 0.4) : contentColor.withValues(alpha: 0.8),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -176,7 +180,7 @@ class NoteCard extends StatelessWidget {
           if (items.length > 3)
             Text(
               '+ ${items.length - 3} more items',
-              style: GoogleFonts.poppins(fontSize: 11, color: Colors.black38),
+              style: GoogleFonts.poppins(fontSize: 11, color: contentColor.withValues(alpha: 0.4)),
             ),
         ],
       );
@@ -185,23 +189,23 @@ class NoteCard extends StatelessWidget {
     }
   }
 
-  Widget _buildAttachmentsPreview() {
+  Widget _buildAttachmentsPreview(Color contentColor) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          const Icon(Icons.attach_file_rounded, size: 16, color: Color(0xFF0061A4)),
+          Icon(Icons.attach_file_rounded, size: 16, color: contentColor.withValues(alpha: 0.8)),
           const SizedBox(width: 4),
           Text(
             '${note.attachments.length} attachment(s)',
-            style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w600, color: const Color(0xFF0061A4)),
+            style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w600, color: contentColor.withValues(alpha: 0.8)),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildFooter() {
+  Widget _buildFooter(Color contentColor) {
     final hasAudio = note.attachments.any((a) => a.toLowerCase().endsWith('.m4a') || a.toLowerCase().endsWith('.mp3'));
 
     return Row(
@@ -214,12 +218,12 @@ class NoteCard extends StatelessWidget {
               style: GoogleFonts.poppins(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF001E30).withValues(alpha: 0.4),
+                color: contentColor.withValues(alpha: 0.4),
               ),
             ),
             if (hasAudio) ...[
               const SizedBox(width: 8),
-              Icon(Icons.mic_rounded, size: 12, color: const Color(0xFF001E30).withValues(alpha: 0.4)),
+              Icon(Icons.mic_rounded, size: 12, color: contentColor.withValues(alpha: 0.4)),
             ],
           ],
         ),
@@ -227,20 +231,15 @@ class NoteCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  const Color(0xFF0061A4).withValues(alpha: 0.1),
-                  const Color(0xFF00A3FF).withValues(alpha: 0.1),
-                ],
-              ),
+              color: contentColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
               note.category!,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF0061A4),
+                color: contentColor.withValues(alpha: 0.8),
                 letterSpacing: 0.5,
               ),
             ),
