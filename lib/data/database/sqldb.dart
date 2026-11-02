@@ -23,7 +23,6 @@ class SqlDb {
         onCreate: _onCreate, version: 6, onUpgrade: _onUpgrade);
     return mydb;
   }
-
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
       await db.execute('ALTER TABLE notes ADD COLUMN isArchived INTEGER NOT NULL DEFAULT 0');

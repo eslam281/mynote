@@ -74,6 +74,7 @@ class _HomePageState extends State<HomePage> {
                 onSearchChanged: (query) => context.read<NotesCubit>().searchNotes(query),
               ),
               if (state.isShowingTrash) const TrashReminder(),
+
               CategorySelector(
                 state: state,
                 onCategorySelected: (category) => context.read<NotesCubit>().filterByCategory(category),
